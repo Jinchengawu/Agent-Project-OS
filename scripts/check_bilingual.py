@@ -20,6 +20,10 @@ PAIRS = (
     ("docs/ROADMAP.md", "docs/ROADMAP.zh-CN.md"),
     ("docs/VERSIONING.md", "docs/VERSIONING.zh-CN.md"),
     ("docs/RELEASE-EVIDENCE.md", "docs/RELEASE-EVIDENCE.zh-CN.md"),
+    ("docs/ORGANIZATION.md", "docs/ORGANIZATION.zh-CN.md"),
+    ("docs/WORKFORCE.md", "docs/WORKFORCE.zh-CN.md"),
+    ("docs/CADENCE.md", "docs/CADENCE.zh-CN.md"),
+    ("docs/OPERATIONS.md", "docs/OPERATIONS.zh-CN.md"),
     ("prompts/agent-writing-protocol.md", "prompts/agent-writing-protocol.zh-CN.md"),
 )
 

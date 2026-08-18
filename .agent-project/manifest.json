@@ -8,9 +8,9 @@
   "protocol_version": "1.0",
   "repository": {
     "default_branch": "main",
-    "url": null
+    "url": "https://github.com/Jinchengawu/Agent-Project-OS.git"
   },
-  "updated_at": "2026-08-14T09:14:57Z",
+  "updated_at": "2026-08-18T08:00:00Z",
   "verification": [
     "python -m unittest discover -s tests -p 'test_*.py'",
     "python scripts/check_privacy.py",

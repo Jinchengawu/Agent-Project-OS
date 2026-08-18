@@ -14,6 +14,8 @@ from .records import read_json
 
 
 ADAPTERS = ("codex", "claude-code", "deepseek-harness")
+ADAPTER_VERSION = "0.4.0a1"
+ADAPTER_SEMVER = "0.4.0-alpha.1"
 MANAGED_START = "<!-- AGENT-PROJECT-OS:START -->"
 MANAGED_END = "<!-- AGENT-PROJECT-OS:END -->"
 DSH_COMMIT = "47f943859bef60e4160492346772ded9b24f765a"
@@ -200,7 +202,7 @@ def generated_files(root: Path, adapter: str, user: bool = False) -> Dict[Path, 
     if adapter == "codex":
         metadata = {
             "adapter": "codex",
-            "adapter_version": "0.1.0a1",
+            "adapter_version": ADAPTER_VERSION,
             "status": "supported",
             "instructions": "AGENTS.md",
             "skill_path": ".agents/skills/agent-project-os/SKILL.md",
@@ -217,7 +219,7 @@ def generated_files(root: Path, adapter: str, user: bool = False) -> Dict[Path, 
         settings_path = root / ".claude" / "settings.json"
         metadata = {
             "adapter": "claude-code",
-            "adapter_version": "0.1.0a1",
+            "adapter_version": ADAPTER_VERSION,
             "status": "supported",
             "instructions": "CLAUDE.md imports AGENTS.md",
             "skill_path": ".claude/skills/agent-project-os/SKILL.md",
@@ -232,7 +234,7 @@ def generated_files(root: Path, adapter: str, user: bool = False) -> Dict[Path, 
         }
     package = {
         "name": "agent-project-os-dsh-adapter",
-        "version": "0.1.0-alpha.1",
+        "version": ADAPTER_SEMVER,
         "private": True,
         "type": "module",
         "main": "index.js",
@@ -248,7 +250,7 @@ def generated_files(root: Path, adapter: str, user: bool = False) -> Dict[Path, 
 """.format(DSH_VERSION, DSH_COMMIT[:12])
     metadata = {
         "adapter": "deepseek-harness",
-        "adapter_version": "0.1.0a1",
+        "adapter_version": ADAPTER_VERSION,
         "status": "preview",
         "compatibility": {"upstream_version": DSH_VERSION, "upstream_commit": DSH_COMMIT},
         "bundle_path": ".dsh/agent-project-os-bundle",
@@ -426,3 +428,46 @@ def doctor(root: Path, adapters: Iterable[str], user: bool = False) -> Dict[str,
             results[adapter]["pinned_commit"] = DSH_COMMIT
             results[adapter]["pinned_version"] = DSH_VERSION
     return results
+
+
+def render_dispatch_entry(
+    root: Path,
+    adapter: str,
+    dispatch_id: str,
+    dry_run: bool = False,
+) -> Dict[str, Any]:
+    """Render a client entry file without starting or controlling a client process."""
+    if adapter not in ADAPTERS:
+        raise ValueError("unknown adapter: {}".format(adapter))
+    dispatch = read_json(root / ".agent-project" / "dispatches" / "{}.json".format(dispatch_id))
+    client_notes = {
+        "codex": "Use AGENTS.md and the project-local Agent Project OS Skill. Keep the dispatch as the goal boundary.",
+        "claude-code": "Use CLAUDE.md, which imports AGENTS.md. Submit the bounded report through the shared CLI.",
+        "deepseek-harness": "Use the pinned preview bundle and profile. Core protocol rules remain client-neutral.",
+    }
+    lines = [
+        "# Agent Project OS dispatch",
+        "",
+        "- Dispatch: `{}`".format(dispatch["dispatch_id"]),
+        "- Project: `{}`".format(dispatch["project_id"]),
+        "- Assigned PM: `{}`".format(dispatch["assigned_to"]),
+        "- Due: `{}`".format(dispatch["due_at"]),
+        "- Adapter: `{}`".format(adapter),
+        "",
+        "## Objective",
+        "",
+        str(dispatch["objective"]),
+        "",
+        "## Expected outputs",
+        "",
+    ]
+    lines.extend("- {}".format(item) for item in dispatch.get("expected_outputs", []))
+    lines.extend(["", "## Acceptance criteria", ""])
+    lines.extend("- {}".format(item) for item in dispatch.get("acceptance_criteria", []))
+    lines.extend(["", "## Client entry", "", client_notes[adapter], ""])
+    relative = Path(".agent-project") / "dispatches" / "rendered" / "{}.{}.md".format(dispatch_id, adapter)
+    target = root / relative
+    if not dry_run:
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text("\n".join(lines), encoding="utf-8")
+    return {"adapter": adapter, "dispatch_id": dispatch_id, "path": relative.as_posix()}

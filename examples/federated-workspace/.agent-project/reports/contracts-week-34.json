@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/child-pm-report-v1.schema.json",
+  "blockers": [], "commit_verification": {"status": "unavailable"},
+  "dispatch_id": "contracts-week-34", "evidence_refs": ["evidence:contracts-e2"],
+  "next_acceptance": "Service consumes orders@2", "project_commit": "synthetic-contracts-v2",
+  "project_id": "contracts", "protocol_version": "1.0", "report_id": "contracts-week-34",
+  "reported_status": "done", "submitted_at": "2026-08-18T01:00:00Z",
+  "submitted_by": "agent:contracts-pm", "summary": "Contract validation passed"
+}

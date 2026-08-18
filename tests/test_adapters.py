@@ -149,10 +149,10 @@ class AdapterTest(unittest.TestCase):
         expected = {
             "CLAUDE.md": "a380c42c9aeeb3c68c5b3fadadba36694f084b763b232c449832de0d1f7e28df",
             ".claude/settings.json": "3ebd12939857b420fd3c66173a715dfc96bcc866ca3313d6d05bb572b0c3a58b",
-            ".agent-project/adapters/codex.json": "ef48d635166279f63ad614f05f62979b02f728fe6d7f58af9d74ad43c981815a",
-            ".agent-project/adapters/claude-code.json": "b40a5f6950e473c4d8b59970b30a38b9fd9ee164da4ed70d0e31e262db683f01",
-            ".agent-project/adapters/deepseek-harness.json": "0e899df919b89fe31fba57104dbab4a077189c81165a1fef9ba6db6f3782dddb",
-            ".dsh/agent-project-os-bundle/package.json": "fbda7e2bdab150ff1c06f206bfa43d45f530edc4889280d54b29942d3b903ae9",
+            ".agent-project/adapters/codex.json": "80b77825b8cf728f8de47ffec13997e31fbdf61cad3736b497c9ee37a2bf1aaa",
+            ".agent-project/adapters/claude-code.json": "10c1ae4158772e3124689c27c386daa45ac1f67d52b687f0c06c3fc4901c0496",
+            ".agent-project/adapters/deepseek-harness.json": "9228b64b3425a69916a184c22a9a191d864750164aeb94cb0658e9f65a2bd991",
+            ".dsh/agent-project-os-bundle/package.json": "8bfd52291c823b8029b9ade3b128ed1180390392e745ca841516c2454092bb55",
             ".dsh/agent-project-os-bundle/cordis.patch.yml": "cad7f70b166ae4844b3ff3db860c97dca619f127378309e9eaae4d2249676f5a",
             ".dsh/agent-project-os-bundle/index.js": "1cadf65bc5b103e72e5df8e3618f4077b7529a7ca98cd097cfcd2e9054512a71",
         }

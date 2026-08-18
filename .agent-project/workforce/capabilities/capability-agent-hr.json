@@ -1,0 +1,8 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/capability-profile-v1.schema.json",
+  "agent_id": "agent:hr",
+  "capabilities": [],
+  "profile_id": "capability-agent-hr",
+  "protocol_version": "1.0",
+  "updated_at": "2026-08-18T08:00:00Z"
+}

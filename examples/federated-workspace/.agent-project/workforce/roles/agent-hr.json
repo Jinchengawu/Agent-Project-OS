@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/role-v1.schema.json",
+  "authority": ["evaluate_agent", "approve_agent_promotion"], "created_at": "2026-08-18T00:00:00Z",
+  "name": "Agent HR", "protocol_version": "1.0", "purpose": "Review synthetic Agent releases",
+  "role_id": "agent-hr", "status": "active"
+}

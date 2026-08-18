@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/role-v1.schema.json",
+  "authority": ["submit_supervision_report"], "created_at": "2026-08-18T00:00:00Z",
+  "name": "Project PM", "protocol_version": "1.0", "purpose": "Supervise one synthetic project",
+  "role_id": "project-pm", "status": "active"
+}

@@ -1,8 +1,22 @@
-# v0.1 Release Candidate 证据
+# Release Candidate 证据
 
 [English](RELEASE-EVIDENCE.md)
 
-证据日期：2026-08-14。机器可读摘要位于 `release/smoke-results-v0.1.json`。
+## v0.4.0a1 本地候选 — 2026-08-18
+
+本地观测结果：
+
+- 33 项集成与契约测试通过，覆盖 CEO/PMO 监督、Agent HR 晋升/回滚、Cadence 幂等、迁移、投影和三端派工渲染。
+- 28 份 Draft 2020-12 Schema 全部可加载；每个新增 Governance/Workforce/Cadence 契约都有正例、缺字段与不兼容版本样例。
+- 合成组织由三个项目、五个 Agent、一次已复核人才升级、两份已接纳 PM 报告和一个 CEO 阻塞例外组成，并通过校验。
+- 规模门禁可重建 30 个项目、50 个 Agent、29 个传递下游项目、30 个到期项与只读大盘。
+- `scripts/release_gate.py`、隐私、双语配对、Python 编译、DeepSeek Harness JavaScript 语法、源码包、wheel 构建和隔离 wheel CLI smoke 在本机 Python 3.11/macOS 通过。
+
+这不是 `0.5.0b1` 证据：尚未运行连续两轮私有只读影子周期。也不是 `1.0.0` 证据：没有私有项目切换到单真源。README 修正仍在等待本轮 Showcase Proposal 批准。
+
+## 历史 v0.1 候选 — 2026-08-14
+
+机器可读客户端 smoke 摘要位于 `release/smoke-results-v0.1.json`。
 
 ## 确定性测试
 
@@ -28,4 +42,4 @@ Claude Code 这条结果直接验证了身份规则：客户端 runtime 与模�
 
 ## 剩余人工门禁
 
-这些证据不授权创建公开仓库、push、tag 或发布包。README/展示复核与最终人工批准完成后，发布动作仍需单独授权。
+远程仓库来自此前已明确批准的 push。本证据不授权再次 push、创建 tag、GitHub Release、发布包或迁移私有项目。README/展示复核完成后，这些动作仍需单独人工批准。

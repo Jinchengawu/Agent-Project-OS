@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/organization-manifest-v1.schema.json",
+  "title": "Agent Project OS organization manifest v1",
+  "type": "object",
+  "required": ["protocol_version", "organization_id", "name", "founder", "executive_roles", "human_authority", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "organization_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "founder": {"type": "string", "minLength": 1},
+    "executive_roles": {
+      "type": "object",
+      "required": ["ceo", "pmo"],
+      "properties": {"ceo": {"type": "string", "minLength": 1}, "pmo": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "human_authority": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

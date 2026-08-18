@@ -2,91 +2,98 @@
 
 [简体中文](README.zh-CN.md)
 
-**Keep AI engineering facts in your repositories—not in one client’s chat history.**
+**Run a one-person AI engineering organization from Git.**
 
-Agent Project OS is a local-first, repo-native project governance protocol and CLI for individual developers and one-person teams maintaining long-lived or federated projects with Codex, Claude Code, and DeepSeek Harness.
+Agent Project OS is a local-first operating system for individual developers and one-person teams maintaining many AI-native projects. It combines a repo-native project kernel, a Founder/CEO/PMO supervision chain, Agent workforce governance, deterministic cadence planning, and adapters for Codex, Claude Code, and DeepSeek Harness.
 
-> **Pre-release:** `0.1.0a1` is a local release candidate. Install it from a source checkout. The public Schema and CLI may still change before the first stable release.
+> **Alpha:** the current local candidate is `0.4.0a1`. It is source-only, untagged, and not published to PyPI. Public Schema and CLI surfaces may still change before `1.0.0`.
 
-Repositories preserve facts and policy. Agents propose structured changes. A deterministic CLI validates and accepts them. Portfolio views are rebuilt from engineering evidence. Humans retain authority over irreversible actions, production, permissions, funds, and publication.
+The design rule is simple: project repositories own engineering facts; the organization repository owns registrations, assignments, immutable reports, reviews, and evidence pointers. Agents propose or report. Deterministic code validates. Humans retain final authority.
 
-## Why this exists
+## The problem it solves
 
-An AI client can report that a task is complete while the repository, its consumers, and the outside world each say something different. Long chat histories also do not travel cleanly across models, clients, machines, or repositories.
+When one person maintains many AI-native projects, the hard part is no longer only generating code. It is remembering which project matters now, who is accountable, what is blocked, what must be accepted next, which supervision run is due, and whether an Agent's Prompt or Skill version is still trustworthy.
 
-Agent Project OS gives those facts durable, reviewable boundaries:
+Agent Project OS gives those questions durable, reviewable boundaries:
 
-- **Project state lives with the project.** Git-tracked JSON and Markdown are the portable source of truth.
-- **Completion requires evidence.** A task cannot enter `done` without accepted E2-or-stronger evidence.
-- **Cross-project delivery requires a consumer.** E3 is recorded only with an accepted consumer receipt.
-- **Clients and models are separate identities.** `runtime`, `client_version`, `model_id`, and `provider_hint` are not collapsed into one field.
-- **The control plane is disposable.** Delete the SQLite index and rebuild it from project and portfolio records.
-- **Client differences stay at the edge.** Codex, Claude Code, and DeepSeek Harness conventions live in adapters, not in the core protocol.
+- **Project facts stay with the project.** Tasks, evidence, decisions, and handoffs remain in each project repository.
+- **The portfolio has an accountable chain.** Founder, Agent CEO, PMO, and one accountable PM per active project have distinct responsibilities.
+- **Agent capability changes are governed.** Roles, evaluations, candidate releases, promotion, rollback, pause, and retirement are recorded separately from model or client identity.
+- **Supervision is deterministic.** Daily, weekly, and monthly due work becomes an idempotent plan that an external scheduler can wake up.
+- **The control plane is rebuildable.** JSON, HTML, and SQLite views are disposable projections of Git-managed records.
+- **Runtime differences stay at the edge.** Codex, Claude Code, and DeepSeek Harness receive client-specific entry files without changing the core protocol.
 
-## Operating model
+## Organization model
 
 ```mermaid
-flowchart LR
-  H["Human authority"] --> P["Project policy"]
-  A["Agent / model / client"] --> I["Structured inbox proposal"]
-  I --> C["Deterministic CLI"]
-  P --> C
-  G["Git + verification"] --> C
-  C --> R["Accepted project records"]
-  R --> F["Federated relationships"]
-  R --> X["Rebuildable status and index"]
-  F --> X
+flowchart TB
+  F["Founder<br/>human authority"] --> CEO["Agent CEO<br/>priority and exceptions"]
+  CEO --> PMO["PMO<br/>dispatch, review, portfolio acceptance"]
+  PMO --> PM1["Project PM A"]
+  PMO --> PM2["Project PM B"]
+  PMO --> PMN["Project PM N"]
+  PM1 --> E1["Engineering Agents"]
+  PM2 --> E2["Engineering Agents"]
+  PMN --> EN["Engineering Agents"]
+  HR["Agent HR<br/>roles, evaluations, releases"] -. governs .-> CEO
+  HR -. governs .-> PMO
+  HR -. governs .-> PM1
+  HR -. governs .-> E1
 ```
 
-The core is not an agent runtime, model router, hosted project manager, or replacement for Git. It is the shared engineering record beneath those tools.
+This hierarchy is a governance graph, not an Agent runtime. Agent Project OS does not start models, control client processes, or replace Git.
+
+## What is included
+
+| Layer | Current capability |
+|---|---|
+| Project Kernel | Task, E0–E4 evidence, decision, handoff, inbox proposal, acceptance receipt, and activity event records |
+| Organization | Organization manifest, project registry, exactly one accountable PM per active project, dispatches, child-PM reports, PMO reviews, portfolio reviews, and CEO exception queue |
+| Agent Workforce | Agent and role registries, capability profiles, Prompt/Skill asset digests, evaluation, candidate release, promotion, rollback, pause, and retirement |
+| Cadence | Time-zone-aware daily/weekly/monthly due calculation, idempotent run planning, bounded retry records, pause, and close |
+| Federation | Cross-repository dependencies, provided/consumed interfaces, affected-project calculation, versioned handoffs, and acceptance receipts |
+| Adapters | Project-local instructions, Skills/bundles, lifecycle event normalization, and dispatch rendering for Codex, Claude Code, and DeepSeek Harness |
+| Projections | Rebuildable SQLite index plus read-only JSON/HTML organization dashboard and private-snapshot comparison |
 
 ## Five-minute first success
 
 ### Requirements
 
 - Python 3.9–3.13
-- Git for versioning the resulting project records
-- A source checkout of this pre-release repository
+- Git
+- macOS or Linux; WSL remains a preview target
 
-Create a virtual environment from the repository root and install the CLI:
+Run the fully synthetic three-project organization without credentials or private data:
 
 ```bash
+git clone https://github.com/Jinchengawu/Agent-Project-OS.git
+cd Agent-Project-OS
 python3 -m venv .venv
 . .venv/bin/activate
-python -m pip install -e .
-agent-project --help
-```
-
-Initialize a clean project beside the checkout:
-
-```bash
-mkdir -p ../agent-project-demo
-cd ../agent-project-demo
-agent-project init --project-id demo --name "Demo Project"
-agent-project validate
-agent-project adapter render --adapter all
-agent-project status --json
-```
-
-The observable result is an `AGENTS.md` plus a `.agent-project/` directory containing a manifest, policy, and separate stores for tasks, evidence, decisions, handoffs, inbox proposals, receipts, and events. The adapter command adds project-local integration files for all three clients.
-
-If initialization refuses to write, use an empty directory or inspect the proposed write set with `agent-project init ... --dry-run`. If validation fails, it reports the invalid record or cross-record invariant and does not silently repair accepted state.
-
-### Inspect the federated example
-
-From the repository root, validate the synthetic three-project workspace and calculate the downstream impact of changing `contracts`:
-
-```bash
+python -m pip install -e '.[test]'
 agent-project --root examples/federated-workspace validate
-agent-project --root examples/federated-workspace --json affected --project-id contracts
-agent-project --root examples/federated-workspace --json index rebuild
+agent-project --root examples/federated-workspace --json dashboard build --as-of 2026-08-18T12:00:00+08:00 --dry-run
 ```
 
-The affected-project result contains `client` and `service`. The rebuilt index reports three projects, three tasks, three evidence records, and one acceptance receipt. See the [workspace walkthrough](examples/federated-workspace/WORKSPACE.md).
+The final command plans a disposable dashboard and returns an observable result without writing it:
 
-## What v0.1 includes
+```json
+{
+  "agent_count": 5,
+  "decision_count": 1,
+  "due_count": 1,
+  "project_count": 3,
+  "status": "planned"
+}
+```
 
-### Repo-native project records
+The example contains three autonomous projects, five Agents, three accountable PM assignments, one reviewed Agent upgrade, two accepted PM reports, and one blocked report routed to the CEO exception queue. Read the [synthetic workspace walkthrough](examples/federated-workspace/WORKSPACE.md).
+
+If validation fails, the CLI reports the invalid record or cross-record invariant and does not silently repair accepted state. Use `--dry-run` on write commands to inspect planned changes first.
+
+## Repository model
+
+Each managed project keeps its own engineering state:
 
 ```text
 AGENTS.md
@@ -102,140 +109,168 @@ AGENTS.md
 └── events/
 ```
 
-Current accepted state lives in entity files. Events, change requests, and receipts use one record per file to avoid a shared JSONL append hotspot. SQLite is an optional, deletable query projection.
-
-### Evidence-gated lifecycle
-
-Tasks follow:
+The organization control repository adds relationships and immutable supervision records without copying project task ledgers:
 
 ```text
-planned → ready → in_progress → blocked / waiting_review → done
-                         ↘ paused / cancelled
+.agent-project/
+├── organization.json
+├── project-registry.json
+├── assignments/
+├── dispatches/
+├── supervision/
+├── reports/
+├── reviews/
+├── workforce/
+└── events/
 ```
 
-Evidence grades remain distinct:
+Current accepted state lives in entity files. Events, change requests, reports, and receipts use one record per file to avoid a shared JSONL append hotspot. SQLite is optional and can be deleted and rebuilt.
 
-| Grade | Meaning | What it does not prove |
+## Core operating loops
+
+### CEO/PMO supervision
+
+1. Register an autonomous project and assign exactly one accountable PM.
+2. Calculate due supervision work from its policy and time zone.
+3. Issue a structured dispatch envelope without launching a client process.
+4. Let the project PM submit a report containing evidence pointers rather than a copied task ledger.
+5. Let PMO accept or reject the report; route unresolved priority, ownership, risk, and conflict exceptions to the CEO queue.
+
+An accepted report advances the next supervision window. Replayed reports, unknown projects, duplicate PMs, incompatible interfaces, and unsupported completion claims are rejected.
+
+### Agent HR
+
+Agent identity, runtime identity, model identity, and role are separate records. A candidate Agent release points to a Prompt, Skill, or bundle by path, commit, and SHA-256 digest.
+
+Promotion requires a passed evaluation and separation between candidate, reviewer, and approver. The validator rejects self-promotion, digest drift, multiple active releases, missing rollback points, duplicate roles, and retirement while an Agent still owns an active assignment.
+
+Agent Project OS governs the lifecycle and evidence. It does not own the Prompt or Skill contents; those can remain in a dedicated capability repository such as an internal AI-PMO project.
+
+### Cadence and dispatch
+
+The core computes due items and creates idempotent `cadence-run-v1` plans. Codex Automation, cron, CI, or another scheduler may wake those plans, but cannot bypass human authority gates. Repeated triggers in the same window reuse the run instead of duplicating it; failed actions have a bounded retry record.
+
+Adapters turn a neutral dispatch envelope into a project-local client entrypoint. Client-specific worktrees, subagents, Agent Teams, or plugin composition remain optional enhancements, not cross-client feature-parity promises.
+
+## Evidence-gated engineering
+
+Task completion, consumer acceptance, and external results remain different facts:
+
+| Grade | Meaning | Boundary |
 |---|---|---|
-| E0 | A claim or declaration | That an artifact exists |
-| E1 | A produced artifact | That deterministic verification passed |
-| E2 | A command actually executed and passed | That a consumer accepted the result |
-| E3 | Consumer acceptance backed by a receipt | That an external outcome occurred |
-| E4 | An observed external outcome | Any broader outcome outside its recorded scope |
+| E0 | Claim or declaration | Does not prove an artifact exists |
+| E1 | Produced artifact | Does not prove deterministic verification passed |
+| E2 | Verification command executed and passed | Does not prove consumer acceptance |
+| E3 | Consumer acceptance backed by a receipt | Does not prove an external outcome |
+| E4 | Observed external outcome | Applies only to the recorded scope |
 
-For E2, the CLI executes the supplied verification command and records its exit code, execution time, duration, and bounded output digest. An Agent cannot promote a self-declared `passed` string into E2 evidence.
+A task cannot enter `done` without accepted E2-or-stronger evidence. The CLI records actual execution metadata for E2 rather than trusting a self-declared `passed` field.
 
-### Federated portfolios
-
-A `portfolio.json` catalogs autonomous repositories without copying their domain state. It records owners, lifecycle, repository location, validation commands, `depends_on`, `provides`, and `consumes` relationships.
-
-The validator rejects unknown projects, dependency cycles, incompatible exact interface versions, unknown providers, invalid member projects, and unaccepted cross-project receipts. `agent-project affected` calculates transitive downstream impact.
-
-### Deterministic CLI
-
-The command surface covers:
+## CLI surface
 
 ```text
 agent-project init
-agent-project validate
-agent-project project add|list|show
+agent-project org init|status|validate
+agent-project project add|list|show|assign-pm
 agent-project task create|update|submit|accept|reject
 agent-project evidence add
 agent-project decision propose|accept|reject|supersede
 agent-project handoff create|validate
+agent-project supervision due|dispatch|submit|accept|reject
+agent-project portfolio review
+agent-project role add|assign
+agent-project agent add|list|show|evaluate|propose-upgrade|promote|rollback|pause|retire
+agent-project workforce review
+agent-project cadence due|plan|record|close
+agent-project adapter render|install|uninstall|doctor|render-dispatch
+agent-project migrate portfolio-v1
+agent-project dashboard build
+agent-project shadow compare
 agent-project affected
-agent-project adapter render|install|uninstall|doctor
 agent-project index rebuild
 agent-project status
+agent-project validate
 ```
 
-Write commands expose `--dry-run`; machine consumers can request JSON with the global `--json` option.
+Write commands support `--dry-run`. Machine consumers can request JSON with the global `--json` option.
 
 ## Runtime compatibility
 
-Status and observations are scoped to the 2026-08-14 release-candidate evidence.
-
-| Surface | v0.1 status | Verified scope and limit |
+| Surface | Status | Verified scope and limit |
 |---|---|---|
-| Codex | Supported | Project `AGENTS.md` and Skill adapter; an isolated lifecycle smoke passed with client `0.147.0-alpha.6.5` and model `gpt-5.6-sol` |
-| Claude Code | Supported | `CLAUDE.md` imports shared rules; Skill and lifecycle Hook adapter; an isolated lifecycle smoke passed with client `2.1.181` and model `deepseek-v4-pro` |
-| DeepSeek Harness | Preview | Keyless bundle, profile patch, event normalization, Schema, golden-file, and JavaScript syntax checks passed; pinned to `0.1.0-rc.5` / `47f9438`; no live credentialed loop is claimed |
+| Codex | Supported | `AGENTS.md`, project Skill, adapter golden tests, normalized events, neutral dispatch rendering, and a historical isolated project lifecycle smoke |
+| Claude Code | Supported | Shared-rule import through `CLAUDE.md`, project Skill, Hooks, adapter golden tests, dispatch rendering, and a historical isolated project lifecycle smoke |
+| DeepSeek Harness | Preview | Keyless bundle/profile rendering, normalized events, golden tests, and JavaScript syntax checks at the pinned compatibility point; no credentialed live loop is claimed |
 
-The Claude Code smoke intentionally demonstrates that client identity and model identity are independent. Worktrees, subagents, Agent Teams, and plugin composition remain client-side enhancements rather than cross-client compatibility promises.
+Runtime, `client_version`, optional `model_id`, and optional `provider_hint` are recorded independently. A Claude Code session may use a non-Anthropic model without corrupting the client identity.
 
-| Environment | Status | Evidence boundary |
-|---|---|---|
-| Python 3.9–3.13 | Declared support | Standard-library runtime; the repository configures this CI matrix, while the current local gate ran on Python 3.11 |
-| macOS | Supported | Current local release gate observed on macOS |
-| Linux | Supported target | CI matrix is configured but no remote CI result exists yet |
-| WSL | Preview | Expected to follow Linux behavior; not a v0.1 release-blocking target |
+DeepSeek Harness itself is in developer preview and may introduce breaking changes. Those changes are confined to its Adapter rather than changing the core Schema.
 
-For the full matrix and current release evidence, read [Compatibility](docs/COMPATIBILITY.md), [Release-candidate Evidence](docs/RELEASE-EVIDENCE.md), and the [machine-readable smoke summary](release/smoke-results-v0.1.json).
+See [Compatibility](docs/COMPATIBILITY.md), [Adapter Design](docs/ADAPTERS.md), and the [historical client smoke record](release/smoke-results-v0.1.json).
 
-## Adapter behavior
+## Verification status
 
-- **Codex:** renders `AGENTS.md` integration and `.agents/skills/agent-project-os/`.
-- **Claude Code:** renders a managed `CLAUDE.md` import, `.claude/skills/`, lifecycle Hooks, and a normalized event bridge.
-- **DeepSeek Harness:** renders a pinned preview Cordis bundle and profile patch without changing core Schema semantics.
+The `0.4.0a1` local gate observed on macOS/Python 3.11 passes:
 
-Adapters target project files by default. User-level configuration requires an explicit `--user`, creates backups, uses managed markers, is idempotent, and supports uninstall. Modified generated files are reported rather than overwritten silently. See [Adapter Design](docs/ADAPTERS.md).
+- 33 integration and contract tests;
+- 28 loadable Draft 2020-12 Schema documents with positive and negative examples;
+- self-hosted repository and synthetic-organization validation;
+- a 30-project/50-Agent synthetic scale gate;
+- privacy and bilingual-document checks;
+- Python compilation and DeepSeek Harness bundle syntax;
+- source distribution, wheel build, and isolated wheel CLI smoke.
 
-## Security, privacy, and authority
+This is local alpha evidence, not public adoption, production readiness, or proof that the private-project shadow gate has passed. The repository configures Python 3.9–3.13 CI, but this local evidence does not substitute for a current remote CI result.
 
-Core operation requires no cloud service, hosted database, account, or real model credential. Public fixtures use synthetic identities and relative paths. The repository’s privacy gate scans for common secrets, personal absolute paths, and private topology names, but a passing scan is not proof that publication is safe.
+Run the same deterministic project gate with `python scripts/release_gate.py`. Details are recorded in [Release Candidate Evidence](docs/RELEASE-EVIDENCE.md).
+
+## Security, privacy, and human authority
+
+Core operation requires no hosted service, cloud database, account, or model credential. Public fixtures use synthetic identities and relative paths. A privacy scan checks common secrets, personal absolute paths, and private topology names, but a passing scan is not proof that publication is safe.
 
 Important boundaries:
 
-- verification commands run with the current user’s local permissions and are not sandboxed;
-- user-level adapter installation is opt-in;
-- Agent proposals do not become accepted state merely because they were generated;
-- production access, secrets, irreversible changes, funds, remote publication, tags, and releases remain human-authorized actions;
-- Agent Project OS does not provide RBAC, cloud synchronization, or execution isolation.
+- verification commands run with the current user's permissions and are not sandboxed;
+- the core plans work but does not start or control Agent clients;
+- production, credentials, funds, permission escalation, public release, destructive migration, and Agent promotion retain human approval;
+- user-level Adapter installation is opt-in, backed up, marked, idempotent, and uninstallable;
+- the read-only dashboard is a disposable projection and never becomes a second fact source;
+- V1 does not provide team accounts, RBAC, cloud synchronization, a hosted SaaS, or execution isolation.
 
-Read [Privacy and Repository Hygiene](docs/PRIVACY.md) and [Security Policy](SECURITY.md) before adopting it for sensitive work.
+Read [Security Policy](SECURITY.md), [Privacy and Repository Hygiene](docs/PRIVACY.md), and [Operations](docs/OPERATIONS.md) before using the system with sensitive repositories.
 
-## Validation
+## Roadmap and release boundary
 
-The local release gate runs 23 tests covering core lifecycle rules, stale proposals, E2/E3 forgery rejection, decisions, handoffs, federation failures, deterministic index rebuild, JSON Schema positive and negative cases, adapter golden files, preservation, idempotency, uninstall, event normalization, the synthetic workspace, privacy, bilingual documents, and DeepSeek Harness bundle syntax.
+| Gate | State |
+|---|---|
+| `0.1.0a1` Project Kernel | Historical pushed baseline; intentionally untagged |
+| `0.2.0a1` CEO/PMO loop | Implemented and covered by synthetic integration tests |
+| `0.3.0a1` Agent HR | Implemented and covered by synthetic integration tests |
+| `0.4.0a1` Cadence and dispatch | Current local candidate |
+| `0.5.0b1` scale and shadow operation | Public dashboard and synthetic scale gate implemented; two private supervision cycles remain unverified |
+| `1.0.0` stable protocol | Planned; requires Schema/CLI freeze, migration checks, and one separately approved private single-source pilot |
 
-After installing the test extra, run:
-
-```bash
-python -m pip install -e '.[test]'
-python scripts/release_gate.py
-```
-
-This is local verification evidence, not evidence of public adoption, production readiness, or an externally executed CI run.
-
-## Current limitations
-
-- `0.1.0a1` is available only from a source checkout; no PyPI package, GitHub Release, or public tag is claimed.
-- DeepSeek Harness remains preview-only and may require adapter changes when its upstream interfaces change.
-- Linux is a configured support target without a recorded remote CI run in this repository state.
-- The core has no Web dashboard, team accounts, RBAC, cloud sync, or MCP server.
-- Portfolio interface compatibility is intentionally strict and currently uses exact version matching.
-- Real private projects have not been migrated into the public fixtures.
-
-Planned work is kept separate in the [Roadmap](docs/ROADMAP.md).
+No PyPI package, GitHub Release, or public version tag is claimed. See the [Roadmap](docs/ROADMAP.md) and [Versioning Policy](docs/VERSIONING.md).
 
 ## Documentation
 
 | Read this | For |
 |---|---|
-| [Method](docs/METHOD.md) | The operating principles and state boundaries |
-| [Architecture](docs/ARCHITECTURE.md) | Core, federation, projection, adapters, and governance packs |
-| [Data Model](docs/DATA-MODEL.md) | Record types and lifecycle states |
-| [Protocol](docs/PROTOCOL.md) | Cross-project artifact and acceptance rules |
-| [Adapter Design](docs/ADAPTERS.md) | Project/user installation and client-specific behavior |
-| [Compatibility](docs/COMPATIBILITY.md) | Supported, preview, and evidence-scoped surfaces |
-| [Governance Packs](docs/GOVERNANCE-PACKS.md) | Optional PMO and workflow-observation integration boundaries |
-| [Versioning](docs/VERSIONING.md) | Schema, CLI, and adapter compatibility policy |
+| [Method](docs/METHOD.md) | Local-first, repo-native, federated, evidence-gated principles |
+| [Architecture](docs/ARCHITECTURE.md) | Kernel, Governance, Workforce, Cadence, Adapters, and projections |
+| [Organization](docs/ORGANIZATION.md) | Founder/CEO/PMO/project-PM responsibilities and report acceptance |
+| [Workforce](docs/WORKFORCE.md) | Agent HR roles, evaluations, releases, promotion, and rollback |
+| [Cadence](docs/CADENCE.md) | Due calculation, idempotency, retry, and scheduler boundaries |
+| [Data Model](docs/DATA-MODEL.md) | Record types, states, and references |
+| [Protocol](docs/PROTOCOL.md) | Cross-project artifacts and acceptance rules |
+| [Operations](docs/OPERATIONS.md) | Rebuild, migration, shadow comparison, and recovery |
+| [Governance Boundaries](docs/GOVERNANCE-PACKS.md) | Integration with AI-PMO and workflow-observation projects |
 
 ## Contributing
 
-Contributions are welcome while the project is still pre-release. Start with [CONTRIBUTING.md](CONTRIBUTING.md), preserve runtime-neutral core semantics, add deterministic evidence for behavior changes, and do not include private paths, credentials, or real project data.
+Contributions are welcome while the protocol is still alpha. Start with [CONTRIBUTING.md](CONTRIBUTING.md), preserve runtime-neutral core semantics, include deterministic evidence for behavior changes, and never commit private paths, credentials, or real project data.
 
-Security reports should follow [SECURITY.md](SECURITY.md). Community participation follows the [Code of Conduct](CODE_OF_CONDUCT.md).
+Security reports follow [SECURITY.md](SECURITY.md). Community participation follows the [Code of Conduct](CODE_OF_CONDUCT.md).
 
 ## License
 

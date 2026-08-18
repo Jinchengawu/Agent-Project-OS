@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the deterministic v0.1 release-candidate gate."""
+"""Run the deterministic local release-candidate gate."""
 
 import importlib.util
 import os

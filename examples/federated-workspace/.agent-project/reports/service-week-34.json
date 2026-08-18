@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/child-pm-report-v1.schema.json",
+  "blockers": [], "commit_verification": {"status": "unavailable"},
+  "dispatch_id": "service-week-34", "evidence_refs": ["evidence:service-e2", "evidence:service-e3"],
+  "next_acceptance": "Client consumes service-api@2", "project_commit": "synthetic-service-v2",
+  "project_id": "service", "protocol_version": "1.0", "report_id": "service-week-34",
+  "reported_status": "done", "submitted_at": "2026-08-18T02:00:00Z",
+  "submitted_by": "agent:service-pm", "summary": "Service tests and consumer receipt passed"
+}

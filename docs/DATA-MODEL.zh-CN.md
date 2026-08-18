@@ -58,3 +58,26 @@ planned -> ready -> in_progress -> waiting_review -> done
 ## 存储规则
 
 接纳态实体文件保存可变的当前状态。审计事件、变更请求和回执采用“一条 JSON 对象一个文件”。SQLite 与渲染看板只是派生缓存。未知主协议版本必须拒绝，不能猜测兼容。
+
+## 组织模型
+
+```mermaid
+erDiagram
+  ORGANIZATION ||--|| PROJECT_REGISTRY : owns
+  PROJECT_REGISTRY ||--o{ PROJECT : registers
+  PROJECT ||--|| ACCOUNTABLE_PM_ASSIGNMENT : governed_by
+  PROJECT ||--o{ DISPATCH : receives
+  DISPATCH ||--|| CHILD_PM_REPORT : answered_by
+  CHILD_PM_REPORT ||--|| SUPERVISION_REVIEW : judged_by
+  ORGANIZATION ||--o{ PORTFOLIO_REVIEW : summarizes
+  ORGANIZATION ||--o{ AGENT : employs
+  AGENT }o--o{ ROLE : assigned
+  AGENT ||--o{ EVALUATION : assessed_by
+  AGENT ||--o{ AGENT_RELEASE : versions
+  EVALUATION ||--o{ UPGRADE_PROPOSAL : gates
+  ORGANIZATION ||--o{ CADENCE_RUN : schedules
+```
+
+组织记录保存治理关系和不可变评审产物，不拥有项目任务状态。Agent release 用路径、commit 与 SHA-256 标识外部 Prompt、Skill 或 bundle。Dashboard JSON/HTML 与 SQLite 表不是实体，只是可删除投影。
+
+状态机见[组织治理](ORGANIZATION.zh-CN.md)、[人才治理](WORKFORCE.zh-CN.md)与[周期监督](CADENCE.zh-CN.md)。

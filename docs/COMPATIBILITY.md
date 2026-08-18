@@ -9,7 +9,7 @@ Status as of 2026-08-14. “Protocol” means the common baseline; client-only e
 | Python 3.9–3.13 | Supported | CLI, Schema, index | Runtime uses the standard library; tests add `jsonschema` |
 | macOS | Supported | Full local CLI | CI matrix target |
 | Linux | Supported | Full local CLI | CI matrix target |
-| WSL | Preview | Expected Linux behavior | Not a release-blocking matrix target in v0.1 |
+| WSL | Preview | Expected Linux behavior | Not a release-blocking matrix target before 1.0 |
 | Codex | Supported | AGENTS, Skill, records, validation | Worktrees/subagents are optional enhancements |
 | Claude Code | Supported | AGENTS import, Skill, records, validation | Lifecycle Hooks normalized; Agent Teams optional |
 | DeepSeek Harness | Preview | Rules, records, validation, event bridge | Pinned to `0.1.0-rc.5` / `47f9438`; breaking changes expected |

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/decision-v1.schema.json",
+  "consequences": [
+    "CEO/PMO and Agent HR are built-in runtime-neutral modules",
+    "AI-PMO owns concrete role, Skill, Prompt and evaluation content through versioned references",
+    "Project tasks remain owned by each project repository"
+  ],
+  "context": "The historical alpha exposed the Project Kernel but did not encode the local Founder/CEO/PMO/HR operating model.",
+  "created_at": "2026-08-18T08:00:00Z",
+  "created_by": "human:project-owner",
+  "decision": "Model Agent Project OS as one package with Project Kernel, Governance, Workforce, Cadence and Adapter layers.",
+  "decision_id": "organization-core-v1",
+  "protocol_version": "1.0",
+  "rationale": "The product must reduce the cognitive load of managing dozens of local AI-native projects and their Agent workforce, not only track cross-project evidence.",
+  "reviewed_by": "human:project-owner",
+  "runtime_identity": {"client_version": "approved-plan", "runtime": "manual"},
+  "status": "accepted",
+  "title": "Make organization governance part of the core product",
+  "updated_at": "2026-08-18T08:00:00Z"
+}

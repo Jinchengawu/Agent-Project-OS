@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/agent-evaluation-v1.schema.json",
+  "title": "Agent Project OS agent evaluation v1",
+  "type": "object",
+  "required": ["protocol_version", "evaluation_id", "agent_id", "reviewer", "score", "outcome", "evidence_refs", "evaluated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "evaluation_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "agent_id": {"type": "string", "minLength": 1},
+    "reviewer": {"type": "string", "minLength": 1},
+    "score": {"type": "integer", "minimum": 1, "maximum": 5},
+    "outcome": {"enum": ["passed", "failed"]},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+    "evaluated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

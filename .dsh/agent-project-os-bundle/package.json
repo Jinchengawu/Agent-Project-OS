@@ -12,5 +12,5 @@
   "name": "agent-project-os-dsh-adapter",
   "private": true,
   "type": "module",
-  "version": "0.1.0-alpha.1"
+  "version": "0.4.0-alpha.1"
 }

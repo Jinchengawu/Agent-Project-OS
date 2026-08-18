@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/role-assignment-v1.schema.json",
+  "title": "Agent Project OS role assignment v1",
+  "type": "object",
+  "required": ["protocol_version", "assignment_id", "scope", "project_id", "role", "agent_id", "status", "assigned_by", "assigned_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "assignment_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "scope": {"enum": ["organization", "project"]},
+    "project_id": {"type": ["string", "null"], "minLength": 1},
+    "role": {"type": "string", "minLength": 1},
+    "agent_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["active", "ended"]},
+    "assigned_by": {"type": "string", "minLength": 1},
+    "assigned_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "ended_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

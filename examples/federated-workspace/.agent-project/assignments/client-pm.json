@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/role-assignment-v1.schema.json",
+  "agent_id": "agent:client-pm", "assigned_at": "2026-08-18T00:00:00Z", "assigned_by": "human:example",
+  "assignment_id": "client-pm", "project_id": "client", "protocol_version": "1.0",
+  "role": "accountable_pm", "scope": "project", "status": "active"
+}

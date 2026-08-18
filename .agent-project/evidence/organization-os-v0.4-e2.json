@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/evidence-v1.schema.json",
+  "acceptance_status": "accepted",
+  "created_at": "2026-08-18T08:10:52Z",
+  "created_by": "agent:codex",
+  "evidence_id": "organization-os-v0.4-e2",
+  "grade": "E2",
+  "kind": "validation",
+  "protocol_version": "1.0",
+  "runtime_identity": {
+    "client_version": "desktop",
+    "runtime": "codex"
+  },
+  "summary": "The deterministic v0.4 local candidate gate passed 33 tests, self-hosted and synthetic organization validation, privacy, bilingual, compile, and DeepSeek Harness syntax checks.",
+  "task_id": "complete-organization-os-v0.4",
+  "verification": {
+    "command": ".venv/bin/python scripts/release_gate.py",
+    "duration_ms": 9900,
+    "executed_at": "2026-08-18T08:10:52Z",
+    "executor": "agent-project",
+    "exit_code": 0,
+    "output_sha256": "455907fcbe828a299ec527efa11ff392aa66fca55276cadc420d3259ed48c83b",
+    "result": "passed"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/agent-evaluation-v1.schema.json",
+  "agent_id": "agent:service-pm", "evaluated_at": "2026-08-18T00:00:00Z",
+  "evaluation_id": "service-pm-v2", "evidence_refs": ["evidence:synthetic-service-pm-eval"],
+  "outcome": "passed", "protocol_version": "1.0", "reviewer": "agent:hr-reviewer", "score": 4
+}

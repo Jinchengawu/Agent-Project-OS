@@ -1,0 +1,9 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/child-pm-report-v1.schema.json",
+  "blockers": ["risk_gate: upstream preview compatibility"], "commit_verification": {"status": "unavailable"},
+  "dispatch_id": "client-week-34", "evidence_refs": [],
+  "next_acceptance": "Human accepts preview compatibility risk", "project_commit": "synthetic-client-v2",
+  "project_id": "client", "protocol_version": "1.0", "report_id": "client-week-34",
+  "reported_status": "blocked", "submitted_at": "2026-08-18T03:00:00Z",
+  "submitted_by": "agent:client-pm", "summary": "Client remains blocked on a risk gate"
+}

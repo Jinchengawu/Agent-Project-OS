@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/role-v1.schema.json",
+  "title": "Agent Project OS role v1",
+  "type": "object",
+  "required": ["protocol_version", "role_id", "name", "purpose", "authority", "status", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "role_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "purpose": {"type": "string", "minLength": 1},
+    "authority": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+    "status": {"enum": ["active", "retired"]},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

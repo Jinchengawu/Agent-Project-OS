@@ -9,7 +9,7 @@
 | Python 3.9–3.13 | 正式支持 | CLI、Schema、索引 | Runtime 仅使用标准库；测试额外使用 `jsonschema` |
 | macOS | 正式支持 | 完整本地 CLI | CI 矩阵目标 |
 | Linux | 正式支持 | 完整本地 CLI | CI 矩阵目标 |
-| WSL | 预览 | 预期与 Linux 行为一致 | v0.1 不作为发布阻断矩阵目标 |
+| WSL | 预览 | 预期与 Linux 行为一致 | 1.0 前不作为发布阻断矩阵目标 |
 | Codex | 正式支持 | AGENTS、Skill、记录、校验 | Worktree/subagent 为可选增强 |
 | Claude Code | 正式支持 | 导入 AGENTS、Skill、记录、校验 | 生命周期 Hooks 已归一化；Agent Teams 可选 |
 | DeepSeek Harness | 预览 | 规则、记录、校验、事件桥 | 固定 `0.1.0-rc.5` / `47f9438`；预期会破坏兼容 |
