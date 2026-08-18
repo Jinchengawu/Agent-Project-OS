@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/handoff-v1.schema.json",
+  "title": "Agent Project OS handoff v1",
+  "type": "object",
+  "required": ["protocol_version", "handoff_id", "project_id", "from_actor", "to_actor", "goal", "completed", "in_progress", "blocked", "decision_refs", "evidence_refs", "next_actions", "runtime_identity", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "handoff_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "from_actor": {"type": "string", "minLength": 1},
+    "to_actor": {"type": "string", "minLength": 1},
+    "goal": {"type": "string", "minLength": 1},
+    "completed": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "in_progress": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "blocked": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "decision_refs": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}},
+    "evidence_refs": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}},
+    "next_actions": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+    "runtime_identity": {"$ref": "common-v1.schema.json#/$defs/runtimeIdentity"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

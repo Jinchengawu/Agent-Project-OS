@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "human:project-owner",
+  "entity": {
+    "id": "core-boundary-v1",
+    "type": "decision"
+  },
+  "event_id": "event-297afe1c9b574148a4e5cb74d8129219",
+  "event_type": "decision.proposed",
+  "occurred_at": "2026-08-14T09:14:58Z",
+  "payload": {},
+  "protocol_version": "1.0",
+  "runtime_identity": {
+    "client_version": "approved-plan",
+    "runtime": "manual"
+  }
+}

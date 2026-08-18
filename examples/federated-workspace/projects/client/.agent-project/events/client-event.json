@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/runtime-adapter-event-v1.schema.json",
+  "adapter": "deepseek-harness",
+  "adapter_event_id": "client-event",
+  "normalized_event": "session.started",
+  "occurred_at": "2026-08-14T00:51:00Z",
+  "payload": {"source_event": "session/created"},
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "0.1.0-rc.5+47f943859bef", "model_id": "example-model-c", "runtime": "deepseek-harness"},
+  "session_id": "synthetic-session-client"
+}

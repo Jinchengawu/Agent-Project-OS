@@ -1,0 +1,17 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/handoff-v1.schema.json",
+  "blocked": ["Human risk-gate approval"],
+  "completed": ["Confirmed service-api@2 is the affected interface"],
+  "created_at": "2026-08-14T00:50:00Z",
+  "decision_refs": [],
+  "evidence_refs": [],
+  "from_actor": "agent:claude-code",
+  "goal": "Resume the client migration only after approval",
+  "handoff_id": "claude-to-dsh",
+  "in_progress": [],
+  "next_actions": ["Wait for approval", "Run cargo test after implementation"],
+  "project_id": "client",
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "example", "model_id": "example-model-b", "runtime": "claude-code"},
+  "to_actor": "agent:deepseek-harness"
+}

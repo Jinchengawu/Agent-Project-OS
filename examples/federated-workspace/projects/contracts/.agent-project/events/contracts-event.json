@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "agent:codex",
+  "entity": {"id": "contract-v2", "type": "task"},
+  "event_id": "contracts-event",
+  "event_type": "task.completed",
+  "occurred_at": "2026-08-14T00:10:00Z",
+  "payload": {"evidence_ref": "contracts-e2"},
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "example", "model_id": "example-model-a", "runtime": "codex"}
+}

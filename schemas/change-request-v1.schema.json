@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/change-request-v1.schema.json",
+  "title": "Agent Project OS change request v1",
+  "type": "object",
+  "required": ["protocol_version", "request_id", "operation", "entity_type", "entity_id", "patch", "status", "submitted_by", "runtime_identity", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "request_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "operation": {"enum": ["create", "update", "delete"]},
+    "entity_type": {"enum": ["task", "evidence", "decision", "handoff"]},
+    "entity_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "base_updated_at": {"type": ["string", "null"], "format": "date-time"},
+    "patch": {"type": "object"},
+    "status": {"enum": ["pending_review", "accepted", "rejected"]},
+    "submitted_by": {"type": "string", "minLength": 1},
+    "reviewed_by": {"type": "string", "minLength": 1},
+    "review_note": {"type": "string"},
+    "runtime_identity": {"$ref": "common-v1.schema.json#/$defs/runtimeIdentity"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

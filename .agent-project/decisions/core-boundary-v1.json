@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/decision-v1.schema.json",
+  "consequences": [
+    "Web views remain rebuildable projections",
+    "Client breakage changes adapters, not core schemas"
+  ],
+  "context": "The approved v0.1 plan separates durable project truth from client execution state.",
+  "created_at": "2026-08-14T09:14:58Z",
+  "created_by": "human:project-owner",
+  "decision": "Use Git records plus deterministic validation as core, with client differences isolated in adapters.",
+  "decision_id": "core-boundary-v1",
+  "protocol_version": "1.0",
+  "rationale": "This preserves local portability and cross-client compatibility.",
+  "reviewed_by": "human:project-owner",
+  "runtime_identity": {
+    "client_version": "approved-plan",
+    "runtime": "manual"
+  },
+  "status": "accepted",
+  "title": "Keep the core repo-native and runtime-neutral",
+  "updated_at": "2026-08-14T09:14:58Z"
+}

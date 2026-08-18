@@ -1,0 +1,6 @@
+{
+  "name": "synthetic-service",
+  "private": true,
+  "scripts": {"test": "node --test"},
+  "type": "module"
+}

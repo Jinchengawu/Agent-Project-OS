@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/task-v1.schema.json",
+  "acceptance_criteria": [
+    "All deterministic tests pass",
+    "Public repository privacy scan passes",
+    "Codex and Claude Code smoke evidence is recorded"
+  ],
+  "blocker": null,
+  "created_at": "2026-08-14T09:14:57Z",
+  "description": "Implement the approved local-first protocol, CLI, federation, adapters, documentation, examples, and release gates.",
+  "evidence_refs": [
+    "real-client-smokes-e1",
+    "release-gate-e2"
+  ],
+  "owner": "agent:codex",
+  "priority": "high",
+  "protocol_version": "1.0",
+  "status": "done",
+  "task_id": "v0.1-release-candidate",
+  "title": "Build Agent Project OS v0.1 release candidate",
+  "updated_at": "2026-08-18T06:38:47Z"
+}

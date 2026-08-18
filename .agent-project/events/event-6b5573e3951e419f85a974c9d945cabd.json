@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "agent:codex",
+  "entity": {
+    "id": "v0.1-release-candidate",
+    "type": "task"
+  },
+  "event_id": "event-6b5573e3951e419f85a974c9d945cabd",
+  "event_type": "task.updated",
+  "occurred_at": "2026-08-14T09:14:57Z",
+  "payload": {
+    "from": "planned",
+    "to": "ready"
+  },
+  "protocol_version": "1.0",
+  "runtime_identity": {
+    "client_version": "desktop",
+    "runtime": "codex"
+  }
+}

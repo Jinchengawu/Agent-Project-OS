@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/project-manifest-v1.schema.json",
+  "created_at": "2026-08-14T00:00:00Z",
+  "lifecycle": "active",
+  "name": "Synthetic Client",
+  "owner": "human:example",
+  "project_id": "client",
+  "protocol_version": "1.0",
+  "repository": {"default_branch": "main", "url": "https://example.invalid/client.git"},
+  "updated_at": "2026-08-14T00:00:00Z",
+  "verification": ["cargo test"]
+}

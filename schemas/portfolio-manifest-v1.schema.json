@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/portfolio-manifest-v1.schema.json",
+  "title": "Agent Project OS portfolio manifest v1",
+  "type": "object",
+  "required": ["protocol_version", "portfolio_id", "name", "projects"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "portfolio_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["project_id", "owner", "lifecycle", "path", "repository", "depends_on", "provides", "consumes", "verification"],
+        "properties": {
+          "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+          "owner": {"type": "string", "minLength": 1},
+          "lifecycle": {"enum": ["planned", "active", "paused", "maintenance", "retired"]},
+          "path": {"type": "string", "minLength": 1},
+          "repository": {"type": ["string", "null"]},
+          "depends_on": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}, "uniqueItems": true},
+          "provides": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "consumes": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "verification": {"type": "array", "items": {"type": "string", "minLength": 1}}
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}

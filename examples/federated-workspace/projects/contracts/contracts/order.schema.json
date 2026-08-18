@@ -1,0 +1,7 @@
+{
+  "$id": "https://example.invalid/contracts/orders@2",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {"order_id": {"type": "string"}, "total_minor": {"minimum": 0, "type": "integer"}},
+  "required": ["order_id", "total_minor"],
+  "type": "object"
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/project-policy-v1.schema.json",
+  "acceptance": {
+    "allow_agent_e2": true,
+    "default": "human_review"
+  },
+  "human_gates": [
+    "irreversible",
+    "production",
+    "permissions",
+    "funds",
+    "public_release"
+  ],
+  "protocol_version": "1.0"
+}

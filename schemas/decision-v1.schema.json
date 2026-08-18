@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/decision-v1.schema.json",
+  "title": "Agent Project OS decision v1",
+  "type": "object",
+  "required": ["protocol_version", "decision_id", "title", "status", "context", "decision", "rationale", "consequences", "created_by", "runtime_identity", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "decision_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "title": {"type": "string", "minLength": 1},
+    "status": {"enum": ["proposed", "accepted", "rejected", "superseded"]},
+    "context": {"type": "string", "minLength": 1},
+    "decision": {"type": "string", "minLength": 1},
+    "rationale": {"type": "string", "minLength": 1},
+    "consequences": {"type": "array", "items": {"type": "string"}},
+    "superseded_by": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "created_by": {"type": "string", "minLength": 1},
+    "reviewed_by": {"type": "string", "minLength": 1},
+    "review_note": {"type": "string"},
+    "runtime_identity": {"$ref": "common-v1.schema.json#/$defs/runtimeIdentity"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "allOf": [{"if": {"properties": {"status": {"const": "superseded"}}}, "then": {"required": ["superseded_by"]}}],
+  "additionalProperties": false
+}

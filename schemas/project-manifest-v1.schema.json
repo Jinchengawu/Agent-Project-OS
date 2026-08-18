@@ -1,0 +1,25 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/project-manifest-v1.schema.json",
+  "title": "Agent Project OS project manifest v1",
+  "type": "object",
+  "required": ["protocol_version", "project_id", "name", "owner", "lifecycle", "repository", "verification", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "name": {"type": "string", "minLength": 1},
+    "owner": {"type": "string", "minLength": 1},
+    "lifecycle": {"enum": ["planned", "active", "paused", "maintenance", "retired"]},
+    "repository": {
+      "type": "object",
+      "required": ["url", "default_branch"],
+      "properties": {"url": {"type": ["string", "null"]}, "default_branch": {"type": "string", "minLength": 1}},
+      "additionalProperties": false
+    },
+    "verification": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

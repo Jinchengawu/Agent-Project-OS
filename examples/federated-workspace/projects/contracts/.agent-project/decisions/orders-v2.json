@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/decision-v1.schema.json",
+  "consequences": ["Consumers must explicitly accept orders@2"],
+  "context": "The previous synthetic contract omitted a required field.",
+  "created_at": "2026-08-14T00:01:00Z",
+  "created_by": "human:example",
+  "decision": "Publish a new orders@2 interface instead of mutating orders@1.",
+  "decision_id": "orders-v2",
+  "protocol_version": "1.0",
+  "rationale": "Versioned contracts keep consumer impact computable.",
+  "runtime_identity": {"client_version": "manual", "runtime": "manual"},
+  "status": "accepted",
+  "title": "Version the orders contract",
+  "updated_at": "2026-08-14T00:02:00Z"
+}

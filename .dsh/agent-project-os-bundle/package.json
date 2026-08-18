@@ -1,0 +1,16 @@
+{
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml"
+  ],
+  "main": "index.js",
+  "name": "agent-project-os-dsh-adapter",
+  "private": true,
+  "type": "module",
+  "version": "0.1.0-alpha.1"
+}

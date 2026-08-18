@@ -1,0 +1,11 @@
+{
+  "adapter": "claude-code",
+  "adapter_version": "0.1.0a1",
+  "hooks": [
+    "SessionStart",
+    "Stop"
+  ],
+  "instructions": "CLAUDE.md imports AGENTS.md",
+  "skill_path": ".claude/skills/agent-project-os/SKILL.md",
+  "status": "supported"
+}

@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/acceptance-receipt-v1.schema.json",
+  "title": "Agent Project OS acceptance receipt v1",
+  "type": "object",
+  "required": ["protocol_version", "receipt_id", "producer", "consumer", "artifact", "acceptance_status", "evidence_refs", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "receipt_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "producer": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "consumer": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "artifact": {"$ref": "common-v1.schema.json#/$defs/artifactIdentity"},
+    "acceptance_status": {"enum": ["pending", "accepted", "rejected"]},
+    "evidence_refs": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}},
+    "reason": {"type": "string"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

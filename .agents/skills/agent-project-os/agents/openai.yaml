@@ -1,0 +1,4 @@
+interface:
+  display_name: "Agent Project OS"
+  short_description: "Govern repo-native AI engineering records"
+  default_prompt: "Use $agent-project-os to manage this task with repo-native evidence and human approval gates."

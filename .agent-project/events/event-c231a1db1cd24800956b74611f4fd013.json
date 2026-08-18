@@ -1,0 +1,20 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "agent:codex",
+  "entity": {
+    "id": "v0.1-release-candidate",
+    "type": "task"
+  },
+  "event_id": "event-c231a1db1cd24800956b74611f4fd013",
+  "event_type": "task.updated",
+  "occurred_at": "2026-08-18T06:38:47Z",
+  "payload": {
+    "from": "blocked",
+    "to": "in_progress"
+  },
+  "protocol_version": "1.0",
+  "runtime_identity": {
+    "client_version": "0.147.0-alpha.6.5",
+    "runtime": "codex"
+  }
+}

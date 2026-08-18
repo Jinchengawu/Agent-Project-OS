@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/runtime-adapter-event-v1.schema.json",
+  "adapter": "claude-code",
+  "adapter_event_id": "service-event",
+  "normalized_event": "validation.completed",
+  "occurred_at": "2026-08-14T00:35:00Z",
+  "payload": {"result": "passed"},
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "example", "model_id": "example-model-b", "runtime": "claude-code"},
+  "session_id": "synthetic-session-service"
+}

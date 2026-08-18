@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/task-v1.schema.json",
+  "acceptance_criteria": ["Risk gate cleared", "Rust tests pass", "Consumer receipt accepted"],
+  "blocker": {"summary": "A human must approve the breaking client migration window.", "type": "risk_gate"},
+  "created_at": "2026-08-14T00:45:00Z",
+  "description": "Adopt service-api@2 after the migration window is approved.",
+  "evidence_refs": [],
+  "owner": "agent:deepseek-harness",
+  "priority": "high",
+  "protocol_version": "1.0",
+  "status": "blocked",
+  "task_id": "adopt-service-api-v2",
+  "title": "Adopt service-api@2",
+  "updated_at": "2026-08-14T00:50:00Z"
+}

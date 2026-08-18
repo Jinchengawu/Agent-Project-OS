@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/runtime-adapter-event-v1.schema.json",
+  "title": "Agent Project OS runtime adapter event v1",
+  "type": "object",
+  "required": ["protocol_version", "adapter_event_id", "adapter", "normalized_event", "session_id", "runtime_identity", "payload", "occurred_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "adapter_event_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "adapter": {"enum": ["codex", "claude-code", "deepseek-harness"]},
+    "normalized_event": {"enum": ["session.started", "session.ended", "tool.started", "tool.ended", "agent.started", "agent.ended", "validation.completed"]},
+    "session_id": {"type": "string", "minLength": 1},
+    "runtime_identity": {"$ref": "common-v1.schema.json#/$defs/runtimeIdentity"},
+    "payload": {"type": "object"},
+    "occurred_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

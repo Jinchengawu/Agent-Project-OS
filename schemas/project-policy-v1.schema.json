@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/project-policy-v1.schema.json",
+  "title": "Agent Project OS project policy v1",
+  "type": "object",
+  "required": ["protocol_version", "acceptance", "human_gates"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "acceptance": {
+      "type": "object",
+      "required": ["default", "allow_agent_e2"],
+      "properties": {
+        "default": {"enum": ["human_review", "policy_auto_accept"]},
+        "allow_agent_e2": {"type": "boolean"}
+      },
+      "additionalProperties": false
+    },
+    "human_gates": {"type": "array", "items": {"enum": ["irreversible", "production", "permissions", "funds", "public_release"]}, "uniqueItems": true}
+  },
+  "additionalProperties": false
+}

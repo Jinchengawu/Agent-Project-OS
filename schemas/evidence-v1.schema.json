@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/evidence-v1.schema.json",
+  "title": "Agent Project OS evidence v1",
+  "type": "object",
+  "required": ["protocol_version", "evidence_id", "task_id", "grade", "kind", "summary", "acceptance_status", "created_by", "runtime_identity", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "evidence_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "task_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "grade": {"enum": ["E0", "E1", "E2", "E3", "E4"]},
+    "kind": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "verification": {
+      "type": ["object", "null"],
+      "required": ["command", "result", "executor", "exit_code", "executed_at", "duration_ms", "output_sha256"],
+      "properties": {
+        "command": {"type": "string", "minLength": 1},
+        "result": {"enum": ["passed", "failed", "not_run"]},
+        "executor": {"type": "string", "minLength": 1},
+        "exit_code": {"type": "integer"},
+        "executed_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+        "duration_ms": {"type": "integer", "minimum": 0},
+        "output_sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "receipt_ref": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "acceptance_status": {"enum": ["proposed", "accepted", "rejected"]},
+    "created_by": {"type": "string", "minLength": 1},
+    "runtime_identity": {"$ref": "common-v1.schema.json#/$defs/runtimeIdentity"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "allOf": [
+    {"if": {"properties": {"grade": {"const": "E2"}}}, "then": {"required": ["verification"]}},
+    {"if": {"properties": {"grade": {"const": "E3"}}}, "then": {"required": ["receipt_ref"]}}
+  ],
+  "additionalProperties": false
+}

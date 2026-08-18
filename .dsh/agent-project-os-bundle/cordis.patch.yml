@@ -1,0 +1,6 @@
+- insert:
+    - id: agent-project-os-adapter
+      name: agent-project-os-dsh-adapter
+      config:
+        projectRoot: !!js process.cwd()
+        clientVersion: '0.1.0-rc.5+47f943859bef'

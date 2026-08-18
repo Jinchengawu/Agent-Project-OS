@@ -1,0 +1,12 @@
+{
+  "adapter": "deepseek-harness",
+  "adapter_version": "0.1.0a1",
+  "bundle_path": ".dsh/agent-project-os-bundle",
+  "compatibility": {
+    "upstream_commit": "47f943859bef60e4160492346772ded9b24f765a",
+    "upstream_version": "0.1.0-rc.5"
+  },
+  "install_command": "dsh plugin --profile <profile> add ./.dsh/agent-project-os-bundle",
+  "status": "preview",
+  "verify_command": "dsh --profile <profile> --dump-config"
+}

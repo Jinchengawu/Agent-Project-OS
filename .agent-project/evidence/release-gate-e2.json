@@ -1,0 +1,25 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/evidence-v1.schema.json",
+  "acceptance_status": "accepted",
+  "created_at": "2026-08-14T09:23:48Z",
+  "created_by": "agent:codex",
+  "evidence_id": "release-gate-e2",
+  "grade": "E2",
+  "kind": "validation",
+  "protocol_version": "1.0",
+  "runtime_identity": {
+    "client_version": "desktop",
+    "runtime": "codex"
+  },
+  "summary": "The installed test-extra release gate passed all deterministic checks.",
+  "task_id": "v0.1-release-candidate",
+  "verification": {
+    "command": ".venv/bin/python scripts/release_gate.py",
+    "duration_ms": 12130,
+    "executed_at": "2026-08-14T09:24:00Z",
+    "executor": "agent-project",
+    "exit_code": 0,
+    "output_sha256": "9ee6ba167caf1e144e35d39be1d23762277f8c8efdef9f3c55fb93b481845a28",
+    "result": "passed"
+  }
+}
