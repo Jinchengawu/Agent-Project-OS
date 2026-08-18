@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/agent-upgrade-proposal-v1.schema.json",
+  "title": "Agent Project OS agent upgrade proposal v1",
+  "type": "object",
+  "required": ["protocol_version", "proposal_id", "agent_id", "candidate_release_id", "evaluation_id", "proposed_by", "status", "created_at", "reviewed_at", "approved_by"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "proposal_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "agent_id": {"type": "string", "minLength": 1},
+    "candidate_release_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "evaluation_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "proposed_by": {"type": "string", "minLength": 1},
+    "status": {"enum": ["proposed", "accepted", "rejected"]},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "reviewed_at": {"type": ["string", "null"], "format": "date-time"},
+    "approved_by": {"type": ["string", "null"]}
+  },
+  "additionalProperties": false
+}

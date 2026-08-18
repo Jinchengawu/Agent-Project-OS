@@ -1,0 +1,22 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/organization-manifest-v1.schema.json",
+  "created_at": "2026-08-18T08:00:00Z",
+  "executive_roles": {
+    "ceo": "agent:ceo",
+    "pmo": "agent:pmo"
+  },
+  "founder": "human:maintainer",
+  "human_authority": [
+    "production",
+    "credentials",
+    "funds",
+    "permissions",
+    "public_release",
+    "destructive_migration",
+    "agent_promotion"
+  ],
+  "name": "Agent Project OS Self-hosted Lab",
+  "organization_id": "agent-project-os-lab",
+  "protocol_version": "1.0",
+  "updated_at": "2026-08-18T08:00:00Z"
+}

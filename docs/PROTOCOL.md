@@ -18,7 +18,23 @@ AGENTS.md
 └── events/
 ```
 
-Every JSON record declares `protocol_version`. Core Schema identifiers are stable URLs, while shipped Schema files work offline. A portfolio root adds `portfolio.json`; its project paths should be relative for portability.
+Every JSON record declares `protocol_version`. Core Schema identifiers are stable URLs, while shipped Schema files work offline. An organization root adds:
+
+```text
+.agent-project/
+├── organization.json
+├── project-registry.json
+├── assignments/
+├── dispatches/
+├── supervision/
+├── reports/
+├── reviews/
+├── workforce/
+├── cadence/
+└── events/
+```
+
+Project paths remain relative for portability. Legacy `portfolio.json` stays readable until `migrate portfolio-v1` archives it; the legacy file and new registry must never be dual-written.
 
 ## Command surface
 
@@ -34,9 +50,23 @@ agent-project affected
 agent-project adapter render|install|uninstall|doctor
 agent-project index rebuild
 agent-project status
+agent-project org init|status|validate
+agent-project project assign-pm
+agent-project supervision due|dispatch|submit|accept|reject
+agent-project portfolio review
+agent-project role add|assign
+agent-project agent add|list|show|evaluate|propose-upgrade|promote|rollback|pause|retire
+agent-project workforce review
+agent-project cadence due|plan|record|close
+agent-project adapter render-dispatch
+agent-project migrate portfolio-v1
+agent-project dashboard build
+agent-project shadow compare
 ```
 
 Global `--root` selects the project/portfolio and `--json` emits machine-readable output. Every write command supports `--dry-run`. The CLI returns `0` on success, `1` for completed validation with invalid records, and `2` for command/precondition errors.
+
+Organization commands preserve three authority separations: one active accountable PM per project; project PM and PMO reviewer are different identities; Agent candidate, independent reviewer, and promotion approver are different identities. External schedulers and runtime adapters cannot grant authority.
 
 ## Runtime identity
 

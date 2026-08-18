@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/cadence-run-v1.schema.json",
+  "title": "Agent Project OS cadence run v1",
+  "type": "object",
+  "required": ["protocol_version", "run_id", "organization_id", "window_start", "window_end", "as_of", "dedupe_key", "status", "actions", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "run_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "organization_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "window_start": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "window_end": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "as_of": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "dedupe_key": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "status": {"enum": ["planned", "running", "completed", "failed", "paused"]},
+    "actions": {"type": "array", "items": {"type": "object"}},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "closed_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

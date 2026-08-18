@@ -1,8 +1,22 @@
-# v0.1 Release-candidate Evidence
+# Release-candidate Evidence
 
 [中文](RELEASE-EVIDENCE.zh-CN.md)
 
-Evidence date: 2026-08-14. The machine-readable summary is `release/smoke-results-v0.1.json`.
+## v0.4.0a1 local candidate — 2026-08-18
+
+Observed local checks:
+
+- 33 integration and contract tests pass, including CEO/PMO supervision, Agent HR promotion/rollback, cadence idempotency, migration, projections, and three-client dispatch rendering.
+- All 28 Draft 2020-12 Schema documents load; every new Governance/Workforce/Cadence contract has valid, missing-field, and incompatible-version samples.
+- The synthetic organization validates with three projects, five Agents, one reviewed talent upgrade, two accepted PM reports, and one CEO blocker exception.
+- The scale gate rebuilds 30 projects, 50 Agents, 29 transitive downstream projects, 30 due items, and the read-only dashboard.
+- `scripts/release_gate.py`, privacy, bilingual pairs, Python compile, DeepSeek Harness JavaScript syntax, source distribution, wheel build, and isolated wheel CLI smoke pass on local Python 3.11/macOS.
+
+This is not `0.5.0b1` evidence: two complete private read-only shadow cycles have not been run. It is not `1.0.0` evidence: no private project has switched to a single source of truth. README correction is also waiting for the current Showcase Proposal approval.
+
+## Historical v0.1 candidate — 2026-08-14
+
+The machine-readable client smoke summary is `release/smoke-results-v0.1.json`.
 
 ## Deterministic suite
 
@@ -28,4 +42,4 @@ No session IDs, transcripts, prompts with private context, absolute project path
 
 ## Remaining human gate
 
-This evidence does not authorize creating a public repository, pushing, tagging, or publishing a package. Those remain separate release actions after the README/display review and final human approval.
+The repository already exists from a prior explicitly approved push. This evidence does not authorize another push, tag, GitHub Release, package publication, or private migration. Those remain separate human-approved actions after the README/display review.

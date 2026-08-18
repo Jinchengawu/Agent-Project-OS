@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/child-pm-report-v1.schema.json",
+  "title": "Agent Project OS child PM report v1",
+  "type": "object",
+  "required": ["protocol_version", "report_id", "dispatch_id", "project_id", "submitted_by", "summary", "project_commit", "commit_verification", "reported_status", "next_acceptance", "blockers", "evidence_refs", "submitted_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "report_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "dispatch_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "submitted_by": {"type": "string", "minLength": 1},
+    "summary": {"type": "string", "minLength": 1},
+    "project_commit": {"type": "string", "minLength": 1},
+    "commit_verification": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {"enum": ["matched", "unavailable"]},
+        "git_head": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": false
+    },
+    "reported_status": {"enum": ["planned", "ready", "in_progress", "blocked", "waiting_review", "done", "paused", "cancelled"]},
+    "next_acceptance": {"type": "string", "minLength": 1},
+    "blockers": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "evidence_refs": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "submitted_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

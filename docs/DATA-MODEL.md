@@ -58,3 +58,26 @@ planned -> ready -> in_progress -> waiting_review -> done
 ## Storage rules
 
 Accepted entity files are mutable current state. Audit events, change requests, and receipts use one JSON object per file. SQLite and rendered dashboards are derived caches. Unknown major protocol versions are rejected rather than guessed.
+
+## Organization model
+
+```mermaid
+erDiagram
+  ORGANIZATION ||--|| PROJECT_REGISTRY : owns
+  PROJECT_REGISTRY ||--o{ PROJECT : registers
+  PROJECT ||--|| ACCOUNTABLE_PM_ASSIGNMENT : governed_by
+  PROJECT ||--o{ DISPATCH : receives
+  DISPATCH ||--|| CHILD_PM_REPORT : answered_by
+  CHILD_PM_REPORT ||--|| SUPERVISION_REVIEW : judged_by
+  ORGANIZATION ||--o{ PORTFOLIO_REVIEW : summarizes
+  ORGANIZATION ||--o{ AGENT : employs
+  AGENT }o--o{ ROLE : assigned
+  AGENT ||--o{ EVALUATION : assessed_by
+  AGENT ||--o{ AGENT_RELEASE : versions
+  EVALUATION ||--o{ UPGRADE_PROPOSAL : gates
+  ORGANIZATION ||--o{ CADENCE_RUN : schedules
+```
+
+Organization records store governance relationships and immutable review artifacts. They do not own project task state. Agent releases identify external Prompt, Skill, or bundle assets by path, commit, and SHA-256. Dashboard JSON/HTML and SQLite tables are not entities; they are disposable projections.
+
+See [Organization](ORGANIZATION.md), [Workforce](WORKFORCE.md), and [Cadence](CADENCE.md) for transition rules.

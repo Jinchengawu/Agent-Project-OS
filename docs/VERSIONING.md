@@ -12,4 +12,4 @@ Agent Project OS uses Semantic Versioning for the Python package and explicit pr
 
 Readers must reject unsupported major protocol versions. Writers must emit one declared version and must not guess a downgrade. Derived indexes carry no compatibility promise because they are disposable and rebuildable.
 
-Prerelease format: `0.1.0a1` in Python metadata and `v0.1.0-alpha.1` for a future Git tag. Creating a tag or publishing a package is a separate human-approved release action.
+Prerelease format uses PEP 440 in Python metadata (`0.4.0a1`) and SemVer spelling for a possible Git tag (`v0.4.0-alpha.1`). The current working candidate has no tag. Creating a tag, GitHub Release, or published package is a separate human-approved release action.

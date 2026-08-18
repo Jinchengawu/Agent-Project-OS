@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/agent-release-v1.schema.json",
+  "title": "Agent Project OS agent release v1",
+  "type": "object",
+  "required": ["protocol_version", "release_id", "agent_id", "status", "asset", "rollback_release_id", "created_at", "activated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "release_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "agent_id": {"type": "string", "minLength": 1},
+    "status": {"enum": ["candidate", "active", "superseded", "rolled_back", "retired"]},
+    "asset": {
+      "type": "object",
+      "required": ["path", "commit", "sha256"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "commit": {"type": "string", "minLength": 1},
+        "sha256": {"type": "string", "pattern": "^[a-fA-F0-9]{64}$"}
+      },
+      "additionalProperties": false
+    },
+    "rollback_release_id": {"type": ["string", "null"]},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "activated_at": {"type": ["string", "null"], "format": "date-time"},
+    "approved_by": {"type": "string"},
+    "reactivated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "reactivated_by": {"type": "string"},
+    "rolled_back_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "rollback_reason": {"type": "string"}
+  },
+  "additionalProperties": false
+}

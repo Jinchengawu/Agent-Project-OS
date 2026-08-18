@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/dispatch-envelope-v1.schema.json",
+  "title": "Agent Project OS dispatch envelope v1",
+  "type": "object",
+  "required": ["protocol_version", "dispatch_id", "project_id", "assigned_to", "objective", "expected_outputs", "acceptance_criteria", "due_at", "status", "issued_by", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "dispatch_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "assigned_to": {"type": "string", "minLength": 1},
+    "objective": {"type": "string", "minLength": 1},
+    "expected_outputs": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+    "acceptance_criteria": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+    "due_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "status": {"enum": ["issued", "cancelled"]},
+    "issued_by": {"type": "string", "minLength": 1},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

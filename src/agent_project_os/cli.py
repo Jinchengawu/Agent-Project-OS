@@ -9,6 +9,7 @@ import sys
 import time
 from typing import Any, Dict, Iterable, Optional
 
+from . import __version__
 from .records import (
     EVIDENCE_GRADES,
     accepted_task_evidence,
@@ -30,7 +31,41 @@ from .federation import (
     rebuild_index,
     validate_portfolio,
 )
-from .adapters import ADAPTERS, doctor as adapter_doctor, render_adapters, uninstall_adapters
+from .adapters import ADAPTERS, doctor as adapter_doctor, render_adapters, render_dispatch_entry, uninstall_adapters
+from .cadence import close_run, plan_run, record_attempt
+from .migration import migrate_portfolio_v1
+from .organization import (
+    active_pm_assignment,
+    add_registered_project,
+    assign_project_pm,
+    build_portfolio_review,
+    create_dispatch,
+    due_projects,
+    has_organization,
+    init_organization,
+    load_organization,
+    load_registry,
+    registry_projects,
+    report_review,
+    review_report,
+    submit_report,
+    validate_organization,
+)
+from .workforce import (
+    add_agent,
+    add_evaluation,
+    add_role,
+    assign_role,
+    build_workforce_review,
+    change_agent_lifecycle,
+    get_agent,
+    list_agents,
+    promote_upgrade,
+    propose_upgrade,
+    rollback_agent,
+)
+from .projections import build_dashboard, rebuild_organization_index
+from .shadow import compare_snapshot
 
 
 PROJECT_DIRS = (
@@ -480,7 +515,10 @@ def cmd_handoff_validate(args: argparse.Namespace) -> int:
 
 def cmd_validate(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
-    errors = validate_portfolio(root) if portfolio_path(root).exists() else validate_project(root)
+    if has_organization(root):
+        errors = validate_organization(root)
+    else:
+        errors = validate_portfolio(root) if portfolio_path(root).exists() else validate_project(root)
     payload = {
         "status": "invalid" if errors else "valid",
         "root": str(root),
@@ -493,6 +531,26 @@ def cmd_validate(args: argparse.Namespace) -> int:
 
 def cmd_project_add(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
+    if has_organization(root):
+        record = add_registered_project(
+            root,
+            args.project_id,
+            args.path,
+            args.owner,
+            args.project_priority,
+            args.lifecycle,
+            args.repository,
+            args.depends_on or [],
+            args.provides or [],
+            args.consumes or [],
+            args.verification,
+            args.supervision,
+            args.timezone,
+            args.next_due_at,
+            args.dry_run,
+        )
+        emit({"status": "planned" if args.dry_run else "added", "project": record, "message": "added {}".format(args.project_id)}, args.json)
+        return 0
     path = portfolio_path(root)
     if path.exists():
         portfolio = load_portfolio(root)
@@ -532,7 +590,7 @@ def cmd_project_add(args: argparse.Namespace) -> int:
 
 def cmd_project_read(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
-    projects = projects_by_id(load_portfolio(root))
+    projects = registry_projects(load_registry(root)) if has_organization(root) else projects_by_id(load_portfolio(root))
     if args.project_command == "show":
         if args.project_id not in projects:
             raise ValueError("unknown project: {}".format(args.project_id))
@@ -543,10 +601,296 @@ def cmd_project_read(args: argparse.Namespace) -> int:
     return 0
 
 
+def cmd_org_init(args: argparse.Namespace) -> int:
+    root = Path(args.root).resolve()
+    result = init_organization(
+        root,
+        args.organization_id,
+        args.name,
+        args.founder,
+        args.ceo_agent_id,
+        args.pmo_agent_id,
+        args.dry_run,
+    )
+    emit(
+        {
+            "status": "planned" if args.dry_run else "created",
+            **result,
+            "message": "initialized organization {}".format(args.organization_id),
+        },
+        args.json,
+    )
+    return 0
+
+
+def cmd_org_read(args: argparse.Namespace) -> int:
+    root = Path(args.root).resolve()
+    errors = validate_organization(root)
+    payload = {
+        "status": "invalid" if errors else "ok",
+        "organization": load_organization(root),
+        "project_count": len(registry_projects(load_registry(root))),
+        "errors": errors,
+        "message": "organization validation failed" if errors else "organization is valid",
+    }
+    emit(payload, args.json)
+    return 1 if errors else 0
+
+
+def cmd_project_assign_pm(args: argparse.Namespace) -> int:
+    root = Path(args.root).resolve()
+    assignment = assign_project_pm(
+        root,
+        args.assignment_id,
+        args.project_id,
+        args.pm_agent_id,
+        args.assigned_by,
+        args.dry_run,
+    )
+    emit(
+        {
+            "status": "planned" if args.dry_run else "assigned",
+            "assignment": assignment,
+            "message": "assigned PM to {}".format(args.project_id),
+        },
+        args.json,
+    )
+    return 0
+
+
+def cmd_supervision_due(args: argparse.Namespace) -> int:
+    due = due_projects(Path(args.root).resolve(), args.as_of)
+    emit({"status": "ok", "as_of": args.as_of, "due": due, "message": "{} due projects".format(len(due))}, args.json)
+    return 0
+
+
+def cmd_supervision_dispatch(args: argparse.Namespace) -> int:
+    dispatch = create_dispatch(
+        Path(args.root).resolve(),
+        args.dispatch_id,
+        args.project_id,
+        args.objective,
+        args.expected_output,
+        args.acceptance,
+        args.due_at,
+        args.issued_by,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "issued", "dispatch": dispatch, "message": "issued {}".format(args.dispatch_id)}, args.json)
+    return 0
+
+
+def cmd_supervision_submit(args: argparse.Namespace) -> int:
+    report = submit_report(
+        Path(args.root).resolve(),
+        args.report_id,
+        args.dispatch_id,
+        args.summary,
+        args.project_commit,
+        args.reported_status,
+        args.next_acceptance,
+        args.evidence_ref or [],
+        args.blocker or [],
+        args.submitted_by,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "submitted", "report": report, "message": "submitted {}".format(args.report_id)}, args.json)
+    return 0
+
+
+def cmd_supervision_review(args: argparse.Namespace) -> int:
+    outcome = "accepted" if args.supervision_command == "accept" else "rejected"
+    review = review_report(
+        Path(args.root).resolve(),
+        args.review_id,
+        args.report_id,
+        outcome,
+        args.reviewed_by,
+        args.note,
+        args.reviewed_at,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else outcome, "review": review, "message": "{} {}".format(outcome, args.report_id)}, args.json)
+    return 0
+
+
+def cmd_portfolio_review(args: argparse.Namespace) -> int:
+    review = build_portfolio_review(Path(args.root).resolve(), args.review_id, args.as_of, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "created", "review": review, "message": "created portfolio review"}, args.json)
+    return 0
+
+
+def cmd_role_add(args: argparse.Namespace) -> int:
+    role = add_role(
+        Path(args.root).resolve(),
+        args.role_id,
+        args.name,
+        args.purpose,
+        args.authority,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "created", "role": role, "message": "created role {}".format(args.role_id)}, args.json)
+    return 0
+
+
+def cmd_role_assign(args: argparse.Namespace) -> int:
+    assignment = assign_role(
+        Path(args.root).resolve(),
+        args.assignment_id,
+        args.agent_id,
+        args.role_id,
+        args.scope,
+        args.project_id,
+        args.assigned_by,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "assigned", "assignment": assignment, "message": "assigned role {}".format(args.role_id)}, args.json)
+    return 0
+
+
+def cmd_agent_add(args: argparse.Namespace) -> int:
+    agent = add_agent(
+        Path(args.root).resolve(),
+        args.agent_id,
+        args.name,
+        args.role_id,
+        args.release_id,
+        args.asset_path,
+        args.asset_commit,
+        args.asset_sha256,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "created", "agent": agent, "message": "created agent {}".format(args.agent_id)}, args.json)
+    return 0
+
+
+def cmd_agent_read(args: argparse.Namespace) -> int:
+    root = Path(args.root).resolve()
+    if args.agent_command == "show":
+        payload = {"status": "ok", "agent": get_agent(root, args.agent_id)}
+    else:
+        payload = {"status": "ok", "agents": list_agents(root)}
+    emit(payload, args.json)
+    return 0
+
+
+def cmd_agent_evaluate(args: argparse.Namespace) -> int:
+    evaluation = add_evaluation(
+        Path(args.root).resolve(),
+        args.evaluation_id,
+        args.agent_id,
+        args.reviewer,
+        args.score,
+        args.outcome,
+        args.evidence_ref,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "created", "evaluation": evaluation, "message": "created evaluation {}".format(args.evaluation_id)}, args.json)
+    return 0
+
+
+def cmd_agent_propose_upgrade(args: argparse.Namespace) -> int:
+    proposal = propose_upgrade(
+        Path(args.root).resolve(),
+        args.proposal_id,
+        args.agent_id,
+        args.release_id,
+        args.asset_path,
+        args.asset_commit,
+        args.asset_sha256,
+        args.evaluation_id,
+        args.proposed_by,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "proposed", "proposal": proposal, "message": "proposed {}".format(args.proposal_id)}, args.json)
+    return 0
+
+
+def cmd_agent_promote(args: argparse.Namespace) -> int:
+    proposal = promote_upgrade(Path(args.root).resolve(), args.proposal_id, args.approved_by, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "promoted", "proposal": proposal, "message": "promoted {}".format(args.proposal_id)}, args.json)
+    return 0
+
+
+def cmd_agent_rollback(args: argparse.Namespace) -> int:
+    result = rollback_agent(Path(args.root).resolve(), args.agent_id, args.approved_by, args.reason, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "rolled_back", "rollback": result, "message": "rolled back {}".format(args.agent_id)}, args.json)
+    return 0
+
+
+def cmd_agent_lifecycle(args: argparse.Namespace) -> int:
+    lifecycle = "paused" if args.agent_command == "pause" else "retired"
+    agent = change_agent_lifecycle(Path(args.root).resolve(), args.agent_id, lifecycle, args.approved_by, args.reason, args.dry_run)
+    emit({"status": "planned" if args.dry_run else lifecycle, "agent": agent, "message": "{} {}".format(lifecycle, args.agent_id)}, args.json)
+    return 0
+
+
+def cmd_workforce_review(args: argparse.Namespace) -> int:
+    review = build_workforce_review(Path(args.root).resolve(), args.review_id, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "created", "review": review, "message": "created workforce review"}, args.json)
+    return 0
+
+
+def cmd_cadence_plan(args: argparse.Namespace) -> int:
+    run = plan_run(
+        Path(args.root).resolve(),
+        args.run_id,
+        args.window_start,
+        args.window_end,
+        args.as_of,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "ok", "run": run, "message": "cadence plan {}".format(args.run_id)}, args.json)
+    return 0
+
+
+def cmd_cadence_record(args: argparse.Namespace) -> int:
+    run = record_attempt(
+        Path(args.root).resolve(),
+        args.run_id,
+        args.action_id,
+        args.result,
+        args.result_ref,
+        args.dry_run,
+    )
+    emit({"status": "planned" if args.dry_run else "recorded", "run": run, "message": "recorded cadence attempt"}, args.json)
+    return 0
+
+
+def cmd_cadence_close(args: argparse.Namespace) -> int:
+    run = close_run(Path(args.root).resolve(), args.run_id, args.outcome, args.dry_run)
+    emit({"status": "planned" if args.dry_run else args.outcome, "run": run, "message": "closed cadence run"}, args.json)
+    return 0
+
+
+def cmd_adapter_dispatch(args: argparse.Namespace) -> int:
+    result = render_dispatch_entry(Path(args.root).resolve(), args.adapter, args.dispatch_id, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "rendered", **result, "message": "rendered dispatch entry"}, args.json)
+    return 0
+
+
+def cmd_migrate_portfolio(args: argparse.Namespace) -> int:
+    result = migrate_portfolio_v1(Path(args.root).resolve(), args.dry_run)
+    emit({"status": "planned" if args.dry_run else "migrated", **result, "message": "migrated portfolio-v1"}, args.json)
+    return 0
+
+
+def cmd_dashboard_build(args: argparse.Namespace) -> int:
+    result = build_dashboard(Path(args.root).resolve(), args.as_of, args.dry_run)
+    emit({"status": "planned" if args.dry_run else "built", **result, "message": "built read-only dashboard"}, args.json)
+    return 0
+
+
+def cmd_shadow_compare(args: argparse.Namespace) -> int:
+    result = compare_snapshot(Path(args.root).resolve(), Path(args.snapshot).resolve())
+    emit({**result, "message": "shadow snapshot {}".format(result["status"])}, args.json)
+    return 0 if result["status"] == "match" else 1
+
+
 def cmd_affected(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
-    portfolio = load_portfolio(root)
-    errors = validate_portfolio(root)
+    portfolio = load_registry(root) if has_organization(root) else load_portfolio(root)
+    errors = validate_organization(root) if has_organization(root) else validate_portfolio(root)
     if errors:
         raise ValueError("portfolio is invalid: {}".format("; ".join(errors)))
     affected = affected_projects(portfolio, args.project_id)
@@ -556,10 +900,10 @@ def cmd_affected(args: argparse.Namespace) -> int:
 
 def cmd_index_rebuild(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
-    errors = validate_portfolio(root)
+    errors = validate_organization(root) if has_organization(root) else validate_portfolio(root)
     if errors:
         raise ValueError("portfolio is invalid: {}".format("; ".join(errors)))
-    summary = rebuild_index(root, args.dry_run)
+    summary = rebuild_organization_index(root, args.dry_run) if has_organization(root) else rebuild_index(root, args.dry_run)
     emit({"status": "planned" if args.dry_run else "rebuilt", "summary": summary, "message": "index rebuilt"}, args.json)
     return 0
 
@@ -576,7 +920,22 @@ def count_records(directory: Path, field: str) -> Dict[str, int]:
 
 def cmd_status(args: argparse.Namespace) -> int:
     root = Path(args.root).resolve()
-    if portfolio_path(root).exists():
+    if has_organization(root):
+        organization = load_organization(root)
+        projects = registry_projects(load_registry(root))
+        errors = validate_organization(root)
+        payload = {
+            "status": "invalid" if errors else "ok",
+            "kind": "organization",
+            "organization_id": organization.get("organization_id"),
+            "projects": {key: projects[key].get("lifecycle") for key in sorted(projects)},
+            "accountable_pms": {
+                key: (active_pm_assignment(root, key) or {}).get("agent_id") for key in sorted(projects)
+            },
+            "errors": errors,
+            "message": "{} projects".format(len(projects)),
+        }
+    elif portfolio_path(root).exists():
         portfolio = load_portfolio(root)
         projects = projects_by_id(portfolio)
         errors = validate_portfolio(root)
@@ -648,6 +1007,7 @@ def add_identity_options(parser: argparse.ArgumentParser) -> None:
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(prog="agent-project")
+    parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--root", default=".", help="Project or portfolio root. Defaults to the current directory.")
     parser.add_argument("--json", action="store_true", help="Emit machine-readable JSON.")
     commands = parser.add_subparsers(dest="command", required=True)
@@ -657,6 +1017,20 @@ def build_parser() -> argparse.ArgumentParser:
     init.add_argument("--name", required=True)
     add_write_options(init)
     init.set_defaults(handler=cmd_init)
+
+    org = commands.add_parser("org", help="Manage the Founder/CEO/PMO organization control plane.")
+    org_commands = org.add_subparsers(dest="org_command", required=True)
+    org_init = org_commands.add_parser("init")
+    org_init.add_argument("--organization-id", required=True)
+    org_init.add_argument("--name", required=True)
+    org_init.add_argument("--founder", required=True)
+    org_init.add_argument("--ceo-agent-id", required=True)
+    org_init.add_argument("--pmo-agent-id", required=True)
+    add_write_options(org_init)
+    org_init.set_defaults(handler=cmd_org_init)
+    for org_action in ("status", "validate"):
+        org_read = org_commands.add_parser(org_action)
+        org_read.set_defaults(handler=cmd_org_read)
 
     validate = commands.add_parser("validate", help="Validate project records and cross-record invariants.")
     validate.set_defaults(handler=cmd_validate)
@@ -769,12 +1143,16 @@ def build_parser() -> argparse.ArgumentParser:
     project_add.add_argument("--project-id", required=True)
     project_add.add_argument("--path", required=True)
     project_add.add_argument("--owner", required=True)
+    project_add.add_argument("--project-priority", choices=("P0", "P1", "P2", "P3"), default="P2")
     project_add.add_argument("--lifecycle", choices=("planned", "active", "paused", "maintenance", "retired"), default="active")
     project_add.add_argument("--repository")
     project_add.add_argument("--depends-on", action="append")
     project_add.add_argument("--provides", action="append")
     project_add.add_argument("--consumes", action="append")
     project_add.add_argument("--verification", action="append", required=True)
+    project_add.add_argument("--supervision", choices=("daily", "weekly", "monthly"), default="weekly")
+    project_add.add_argument("--timezone", default="UTC")
+    project_add.add_argument("--next-due-at")
     add_write_options(project_add)
     project_add.set_defaults(handler=cmd_project_add)
     project_list = project_commands.add_parser("list")
@@ -782,6 +1160,184 @@ def build_parser() -> argparse.ArgumentParser:
     project_show = project_commands.add_parser("show")
     project_show.add_argument("--project-id", required=True)
     project_show.set_defaults(handler=cmd_project_read)
+    project_assign_pm = project_commands.add_parser("assign-pm")
+    project_assign_pm.add_argument("--assignment-id", required=True)
+    project_assign_pm.add_argument("--project-id", required=True)
+    project_assign_pm.add_argument("--pm-agent-id", required=True)
+    project_assign_pm.add_argument("--assigned-by", default="human:founder")
+    add_write_options(project_assign_pm)
+    project_assign_pm.set_defaults(handler=cmd_project_assign_pm)
+
+    supervision = commands.add_parser("supervision", help="Issue and review periodic child-PM supervision work.")
+    supervision_commands = supervision.add_subparsers(dest="supervision_command", required=True)
+    supervision_due = supervision_commands.add_parser("due")
+    supervision_due.add_argument("--as-of", required=True)
+    supervision_due.set_defaults(handler=cmd_supervision_due)
+    supervision_dispatch = supervision_commands.add_parser("dispatch")
+    supervision_dispatch.add_argument("--dispatch-id", required=True)
+    supervision_dispatch.add_argument("--project-id", required=True)
+    supervision_dispatch.add_argument("--objective", required=True)
+    supervision_dispatch.add_argument("--expected-output", action="append", required=True)
+    supervision_dispatch.add_argument("--acceptance", action="append", required=True)
+    supervision_dispatch.add_argument("--due-at", required=True)
+    supervision_dispatch.add_argument("--issued-by", default="agent:pmo")
+    add_write_options(supervision_dispatch)
+    supervision_dispatch.set_defaults(handler=cmd_supervision_dispatch)
+    supervision_submit = supervision_commands.add_parser("submit")
+    supervision_submit.add_argument("--report-id", required=True)
+    supervision_submit.add_argument("--dispatch-id", required=True)
+    supervision_submit.add_argument("--summary", required=True)
+    supervision_submit.add_argument("--project-commit", required=True)
+    supervision_submit.add_argument("--reported-status", choices=("planned", "ready", "in_progress", "blocked", "waiting_review", "done", "paused", "cancelled"), required=True)
+    supervision_submit.add_argument("--next-acceptance", required=True)
+    supervision_submit.add_argument("--evidence-ref", action="append")
+    supervision_submit.add_argument("--blocker", action="append")
+    supervision_submit.add_argument("--submitted-by", required=True)
+    add_write_options(supervision_submit)
+    supervision_submit.set_defaults(handler=cmd_supervision_submit)
+    for supervision_action in ("accept", "reject"):
+        supervision_review = supervision_commands.add_parser(supervision_action)
+        supervision_review.add_argument("--review-id", required=True)
+        supervision_review.add_argument("--report-id", required=True)
+        supervision_review.add_argument("--reviewed-by", default="agent:pmo")
+        supervision_review.add_argument("--reviewed-at")
+        supervision_review.add_argument("--note", default="")
+        add_write_options(supervision_review)
+        supervision_review.set_defaults(handler=cmd_supervision_review)
+
+    portfolio = commands.add_parser("portfolio", help="Build accepted organization-level portfolio reviews.")
+    portfolio_commands = portfolio.add_subparsers(dest="portfolio_command", required=True)
+    portfolio_review = portfolio_commands.add_parser("review")
+    portfolio_review.add_argument("--review-id", required=True)
+    portfolio_review.add_argument("--as-of", required=True)
+    add_write_options(portfolio_review)
+    portfolio_review.set_defaults(handler=cmd_portfolio_review)
+
+    role = commands.add_parser("role", help="Manage runtime-neutral Agent role definitions.")
+    role_commands = role.add_subparsers(dest="role_command", required=True)
+    role_add = role_commands.add_parser("add")
+    role_add.add_argument("--role-id", required=True)
+    role_add.add_argument("--name", required=True)
+    role_add.add_argument("--purpose", required=True)
+    role_add.add_argument("--authority", action="append", required=True)
+    add_write_options(role_add)
+    role_add.set_defaults(handler=cmd_role_add)
+    role_assign = role_commands.add_parser("assign")
+    role_assign.add_argument("--assignment-id", required=True)
+    role_assign.add_argument("--agent-id", required=True)
+    role_assign.add_argument("--role-id", required=True)
+    role_assign.add_argument("--scope", choices=("organization", "project"), default="organization")
+    role_assign.add_argument("--project-id")
+    role_assign.add_argument("--assigned-by", default="human:founder")
+    add_write_options(role_assign)
+    role_assign.set_defaults(handler=cmd_role_assign)
+
+    agent = commands.add_parser("agent", help="Manage Agent HR registry, evaluations, releases, and lifecycle.")
+    agent_commands = agent.add_subparsers(dest="agent_command", required=True)
+    agent_add = agent_commands.add_parser("add")
+    agent_add.add_argument("--agent-id", required=True)
+    agent_add.add_argument("--name", required=True)
+    agent_add.add_argument("--role-id", action="append", required=True)
+    agent_add.add_argument("--release-id")
+    agent_add.add_argument("--asset-path")
+    agent_add.add_argument("--asset-commit")
+    agent_add.add_argument("--asset-sha256")
+    add_write_options(agent_add)
+    agent_add.set_defaults(handler=cmd_agent_add)
+    agent_list = agent_commands.add_parser("list")
+    agent_list.set_defaults(handler=cmd_agent_read)
+    agent_show = agent_commands.add_parser("show")
+    agent_show.add_argument("--agent-id", required=True)
+    agent_show.set_defaults(handler=cmd_agent_read)
+    agent_evaluate = agent_commands.add_parser("evaluate")
+    agent_evaluate.add_argument("--evaluation-id", required=True)
+    agent_evaluate.add_argument("--agent-id", required=True)
+    agent_evaluate.add_argument("--reviewer", required=True)
+    agent_evaluate.add_argument("--score", type=int, required=True)
+    agent_evaluate.add_argument("--outcome", choices=("passed", "failed"), required=True)
+    agent_evaluate.add_argument("--evidence-ref", action="append", required=True)
+    add_write_options(agent_evaluate)
+    agent_evaluate.set_defaults(handler=cmd_agent_evaluate)
+    agent_upgrade = agent_commands.add_parser("propose-upgrade")
+    agent_upgrade.add_argument("--proposal-id", required=True)
+    agent_upgrade.add_argument("--agent-id", required=True)
+    agent_upgrade.add_argument("--release-id", required=True)
+    agent_upgrade.add_argument("--asset-path", required=True)
+    agent_upgrade.add_argument("--asset-commit", required=True)
+    agent_upgrade.add_argument("--asset-sha256", required=True)
+    agent_upgrade.add_argument("--evaluation-id", required=True)
+    agent_upgrade.add_argument("--proposed-by", required=True)
+    add_write_options(agent_upgrade)
+    agent_upgrade.set_defaults(handler=cmd_agent_propose_upgrade)
+    agent_promote = agent_commands.add_parser("promote")
+    agent_promote.add_argument("--proposal-id", required=True)
+    agent_promote.add_argument("--approved-by", required=True)
+    add_write_options(agent_promote)
+    agent_promote.set_defaults(handler=cmd_agent_promote)
+    agent_rollback = agent_commands.add_parser("rollback")
+    agent_rollback.add_argument("--agent-id", required=True)
+    agent_rollback.add_argument("--approved-by", required=True)
+    agent_rollback.add_argument("--reason", required=True)
+    add_write_options(agent_rollback)
+    agent_rollback.set_defaults(handler=cmd_agent_rollback)
+    for lifecycle_action in ("pause", "retire"):
+        agent_lifecycle = agent_commands.add_parser(lifecycle_action)
+        agent_lifecycle.add_argument("--agent-id", required=True)
+        agent_lifecycle.add_argument("--approved-by", required=True)
+        agent_lifecycle.add_argument("--reason", required=True)
+        add_write_options(agent_lifecycle)
+        agent_lifecycle.set_defaults(handler=cmd_agent_lifecycle)
+
+    workforce = commands.add_parser("workforce", help="Build Agent HR review projections.")
+    workforce_commands = workforce.add_subparsers(dest="workforce_command", required=True)
+    workforce_review = workforce_commands.add_parser("review")
+    workforce_review.add_argument("--review-id", required=True)
+    add_write_options(workforce_review)
+    workforce_review.set_defaults(handler=cmd_workforce_review)
+
+    cadence = commands.add_parser("cadence", help="Plan deterministic supervision runs for external schedulers.")
+    cadence_commands = cadence.add_subparsers(dest="cadence_command", required=True)
+    cadence_due = cadence_commands.add_parser("due")
+    cadence_due.add_argument("--as-of", required=True)
+    cadence_due.set_defaults(handler=cmd_supervision_due)
+    cadence_plan = cadence_commands.add_parser("plan")
+    cadence_plan.add_argument("--run-id", required=True)
+    cadence_plan.add_argument("--window-start", required=True)
+    cadence_plan.add_argument("--window-end", required=True)
+    cadence_plan.add_argument("--as-of", required=True)
+    add_write_options(cadence_plan)
+    cadence_plan.set_defaults(handler=cmd_cadence_plan)
+    cadence_record = cadence_commands.add_parser("record")
+    cadence_record.add_argument("--run-id", required=True)
+    cadence_record.add_argument("--action-id", required=True)
+    cadence_record.add_argument("--result", choices=("succeeded", "failed"), required=True)
+    cadence_record.add_argument("--result-ref", required=True)
+    add_write_options(cadence_record)
+    cadence_record.set_defaults(handler=cmd_cadence_record)
+    cadence_close = cadence_commands.add_parser("close")
+    cadence_close.add_argument("--run-id", required=True)
+    cadence_close.add_argument("--outcome", choices=("completed", "failed", "paused"), required=True)
+    add_write_options(cadence_close)
+    cadence_close.set_defaults(handler=cmd_cadence_close)
+
+    migrate = commands.add_parser("migrate", help="Run recoverable protocol migrations.")
+    migrate_commands = migrate.add_subparsers(dest="migrate_command", required=True)
+    migrate_portfolio = migrate_commands.add_parser("portfolio-v1")
+    add_write_options(migrate_portfolio)
+    migrate_portfolio.set_defaults(handler=cmd_migrate_portfolio)
+
+    dashboard = commands.add_parser("dashboard", help="Build a disposable read-only local organization dashboard.")
+    dashboard_commands = dashboard.add_subparsers(dest="dashboard_command", required=True)
+    dashboard_build = dashboard_commands.add_parser("build")
+    dashboard_build.add_argument("--as-of", required=True)
+    add_write_options(dashboard_build)
+    dashboard_build.set_defaults(handler=cmd_dashboard_build)
+
+    shadow = commands.add_parser("shadow", help="Compare a read-only external snapshot without importing private state.")
+    shadow_commands = shadow.add_subparsers(dest="shadow_command", required=True)
+    shadow_compare = shadow_commands.add_parser("compare")
+    shadow_compare.add_argument("--snapshot", required=True)
+    shadow_compare.set_defaults(handler=cmd_shadow_compare)
 
     affected = commands.add_parser("affected", help="Compute transitive downstream impact from dependencies and interfaces.")
     affected.add_argument("--project-id", required=True)
@@ -808,6 +1364,11 @@ def build_parser() -> argparse.ArgumentParser:
     adapter_diagnostics.add_argument("--adapter", choices=(*ADAPTERS, "all"), default="all")
     adapter_diagnostics.add_argument("--user", action="store_true")
     adapter_diagnostics.set_defaults(handler=cmd_adapter_doctor)
+    adapter_dispatch = adapter_commands.add_parser("render-dispatch")
+    adapter_dispatch.add_argument("--adapter", choices=ADAPTERS, required=True)
+    adapter_dispatch.add_argument("--dispatch-id", required=True)
+    add_write_options(adapter_dispatch)
+    adapter_dispatch.set_defaults(handler=cmd_adapter_dispatch)
     return parser
 
 

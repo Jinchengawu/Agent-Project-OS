@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "agent:codex",
+  "entity": {"id": "complete-organization-os-v0.4", "type": "task"},
+  "event_id": "event-organization-os-v0.4-done",
+  "event_type": "task.updated",
+  "occurred_at": "2026-08-18T08:10:52Z",
+  "payload": {"from": "in_progress", "to": "done"},
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "desktop", "runtime": "codex"}
+}

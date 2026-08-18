@@ -1,14 +1,14 @@
-# 可选治理集成
+# 能力包与治理集成
 
 [English](GOVERNANCE-PACKS.md)
 
-Agent Project OS Core 有意保持单仓库即可独立使用。可选包可以消费稳定接口，但不能成为第二真源。
+Agent Project OS 内置运行时中立的 CEO/PMO 与 Agent HR 治理。外部能力仓库可以提供具体角色、Skills、Prompts 和评测内容，但不能成为第二真源。
 
-## AI-PMO Governance Pack
+## AI-PMO 能力包
 
-AI-PMO 风格治理包可以增加 Portfolio 报告、子项目报告、E0–E4 门禁、阻塞对账与组合接纳。它通过已发布 Schema 版本、`agent-project --json`、Git 标识、验证结果和接纳回执集成。
+AI-PMO 风格仓库拥有具体 PMO/HR 角色定义、Skills、Prompts、评测集及其版本历史。Agent Project OS 拥有中立组织、报告、评测、晋升和 Cadence 契约。双方通过已发布 Schema/CLI 版本、路径、Git 标识、SHA-256、验证结果和接纳回执集成。
 
-它不得把项目任务账本复制到另一份 canonical 存储，不得静默接纳项目工作，也不能把“生成报告”当成 E3/E4 证据。
+双方都不得把项目任务账本复制到另一份 canonical 存储，不得静默接纳项目工作，也不能把“生成报告”当成 E3/E4 证据。
 
 ## AI-Work-Watcher Bridge
 
@@ -19,8 +19,8 @@ AI-PMO 风格治理包可以增加 Portfolio 报告、子项目报告、E0–E4 
 ## 集成规则
 
 ```text
-Core Schema/CLI -> 版本化证据接口 -> 可选治理包
-可选治理包 -> 变更请求/回执 -> Core 复核路径
+Agent Project OS Schema/CLI -> 版本化治理接口 -> 能力包
+能力包 -> 资产版本/评测证据 -> Agent HR 复核路径
 ```
 
 各包之间不复制源码；兼容性由协议/包版本声明，并通过契约测试验证。

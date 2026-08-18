@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/workforce-review-v1.schema.json",
+  "title": "Agent Project OS workforce review v1",
+  "type": "object",
+  "required": ["protocol_version", "review_id", "agents", "upgrade_queue", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "review_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "agents": {"type": "array", "items": {"type": "object"}},
+    "upgrade_queue": {"type": "array", "items": {"type": "string", "minLength": 1}},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/supervision-policy-v1.schema.json",
+  "title": "Agent Project OS supervision policy v1",
+  "type": "object",
+  "required": ["protocol_version", "policy_id", "cadence", "timezone", "next_due_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "policy_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "cadence": {"enum": ["daily", "weekly", "monthly"]},
+    "timezone": {"type": "string", "minLength": 1},
+    "next_due_at": {"type": ["string", "null"], "format": "date-time"},
+    "paused": {"type": "boolean"}
+  },
+  "additionalProperties": false
+}

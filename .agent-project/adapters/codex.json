@@ -1,6 +1,6 @@
 {
   "adapter": "codex",
-  "adapter_version": "0.1.0a1",
+  "adapter_version": "0.4.0a1",
   "hooks": "optional-not-installed",
   "instructions": "AGENTS.md",
   "skill_path": ".agents/skills/agent-project-os/SKILL.md",

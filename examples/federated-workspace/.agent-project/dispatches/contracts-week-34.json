@@ -1,0 +1,8 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/dispatch-envelope-v1.schema.json",
+  "acceptance_criteria": ["Report references current evidence"], "assigned_to": "agent:contracts-pm",
+  "created_at": "2026-08-18T00:00:00Z", "dispatch_id": "contracts-week-34",
+  "due_at": "2026-08-18T02:00:00Z", "expected_outputs": ["Bounded child PM report"],
+  "issued_by": "agent:pmo", "objective": "Reconcile the orders contract change",
+  "project_id": "contracts", "protocol_version": "1.0", "status": "issued"
+}

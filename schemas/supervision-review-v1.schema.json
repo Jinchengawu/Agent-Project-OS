@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/supervision-review-v1.schema.json",
+  "title": "Agent Project OS supervision review v1",
+  "type": "object",
+  "required": ["protocol_version", "review_id", "review_type", "report_id", "project_id", "outcome", "reviewed_by", "note", "reviewed_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "review_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "review_type": {"const": "supervision_report"},
+    "report_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "outcome": {"enum": ["accepted", "rejected"]},
+    "reviewed_by": {"type": "string", "minLength": 1},
+    "note": {"type": "string"},
+    "reviewed_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

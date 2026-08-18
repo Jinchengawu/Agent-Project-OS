@@ -1,0 +1,45 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/project-registry-v1.schema.json",
+  "title": "Agent Project OS project registry v1",
+  "type": "object",
+  "required": ["protocol_version", "organization_id", "projects", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "organization_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "projects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["project_id", "owner", "priority", "lifecycle", "path", "repository", "depends_on", "provides", "consumes", "verification", "supervision"],
+        "properties": {
+          "project_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+          "owner": {"type": "string", "minLength": 1},
+          "priority": {"enum": ["P0", "P1", "P2", "P3"]},
+          "lifecycle": {"enum": ["planned", "active", "paused", "maintenance", "retired"]},
+          "path": {"type": "string", "minLength": 1},
+          "repository": {"type": ["string", "null"]},
+          "depends_on": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}, "uniqueItems": true},
+          "provides": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "consumes": {"type": "array", "items": {"type": "string", "minLength": 1}, "uniqueItems": true},
+          "verification": {"type": "array", "items": {"type": "string", "minLength": 1}, "minItems": 1},
+          "supervision": {
+            "type": "object",
+            "required": ["cadence", "timezone", "next_due_at"],
+            "properties": {
+              "cadence": {"enum": ["daily", "weekly", "monthly"]},
+              "timezone": {"type": "string", "minLength": 1},
+              "next_due_at": {"type": ["string", "null"], "format": "date-time"}
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

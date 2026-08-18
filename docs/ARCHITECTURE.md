@@ -4,20 +4,26 @@
 
 ## Boundary
 
-Agent Project OS is a protocol and deterministic local CLI, not an agent runtime or Web product. Core records describe project governance without naming a model provider or client. Adapters translate client lifecycle and instruction conventions into the shared protocol.
+Agent Project OS is a local organization protocol and deterministic CLI, not an agent runtime or hosted project manager. Its Project Kernel preserves engineering facts; built-in Governance, Workforce, and Cadence modules coordinate the local Harness without naming a model provider or client. Adapters translate client conventions into the shared protocol.
 
 ```mermaid
 flowchart TB
-  H["Human authority"] --> P["Project policy"]
-  A["Agent / model / client"] --> D["Runtime adapter"]
-  D --> I["Structured inbox proposal"]
-  I --> C["Deterministic CLI"]
-  P --> C
-  C --> E["Accepted repo entities"]
-  G["Git + verification"] --> E
-  E --> X["Disposable index and status projection"]
-  E --> F["Federated portfolio relationships"]
-  F --> X
+  F["Founder / human authority"] --> CEO["Agent CEO"]
+  CEO --> PMO["PMO"]
+  PMO --> P1["Project PM A"]
+  PMO --> PN["Project PM N"]
+  P1 --> K1["Project Kernel A"]
+  PN --> KN["Project Kernel N"]
+  CEO --> HR["Agent HR"]
+  HR --> W["Roles · evaluations · releases"]
+  C["Deterministic CLI"] --> PMO
+  C --> HR
+  C --> K1
+  C --> KN
+  A["Codex / Claude Code / DSH"] --> D["Runtime adapters"]
+  D --> C
+  PMO --> X["Disposable CEO/PMO projection"]
+  HR --> X
 ```
 
 ## Layers
@@ -26,15 +32,23 @@ flowchart TB
 
 Owns project manifests, policies, tasks, evidence, decisions, handoffs, change requests, acceptance receipts, activity events, runtime-adapter events, lifecycle invariants, and validation.
 
-### 2. Federation
+### 2. Governance
 
-`portfolio.json` records projects and dependency/interface edges. It calculates transitive impact and validates cycles, unknown projects, incompatible interface versions, and unaccepted cross-project receipts. It does not copy task or domain state.
+`organization.json` and `project-registry.json` record the Founder/CEO/PMO structure, project priorities, PM assignments, dependency/interface edges, and supervision policy. Dispatch, immutable child-PM reports, PMO reviews, portfolio reviews, and CEO exceptions form the vertical control loop. Project tasks remain in project repositories.
 
-### 3. Projection
+### 3. Workforce
 
-`.agent-project/index.sqlite3` is a disposable local query cache. `agent-project index rebuild` recreates it exclusively from repository records. No accepted write is made only to SQLite.
+Agent HR owns neutral Agent and Role registries, capability profiles, asset releases, evaluations, upgrade proposals, promotion, rollback, pause, and retirement. Concrete Prompt/Skill content remains in its owning capability repository and is referenced by path, commit, and SHA-256.
 
-### 4. Runtime adapters
+### 4. Cadence
+
+Cadence computes due work, idempotent run windows, and bounded attempts. External schedulers wake plans; the core does not run a daemon or control client processes. Client dispatch rendering is output-only.
+
+### 5. Projection
+
+`.agent-project/index.sqlite3` plus the local HTML/JSON dashboard are disposable query projections. Rebuild commands recreate them exclusively from repository records. No accepted write is made only to SQLite or the dashboard.
+
+### 6. Runtime adapters
 
 - Codex: `AGENTS.md` and project Skill.
 - Claude Code: `CLAUDE.md` imports `AGENTS.md`; project Skill and lifecycle hooks emit normalized events.
@@ -42,9 +56,9 @@ Owns project manifests, policies, tasks, evidence, decisions, handoffs, change r
 
 Adapter failure cannot change core record semantics. User-level writes require `--user`, preserve prior content, use managed state, and support uninstall.
 
-### 5. Optional governance packs
+### 7. Capability packs and bridges
 
-AI-PMO-style portfolio governance and workflow-observation bridges integrate through versioned Schema/CLI interfaces. They remain separate packages and cannot own accepted project task state.
+Organization governance and Agent HR are built into the neutral core package. AI-PMO-style repositories may own concrete roles, Skills, Prompts, and evaluation sets; workflow-observation bridges may propose improvements. They integrate through versioned Schema/CLI interfaces and cannot own accepted project task state.
 
 ## Write paths
 
@@ -56,4 +70,4 @@ One record per audit/event/receipt file avoids a shared JSONL append hotspot and
 
 ## Failure posture
 
-Validation fails closed on incompatible protocol versions, illegal transitions, missing required evidence, stale change requests, unknown references, graph cycles, interface mismatches, and modified managed adapter files. The CLI does not silently repair accepted state.
+Validation fails closed on incompatible protocol versions, illegal transitions, missing required evidence, duplicate PMs, stale project commits, self-review or self-promotion, asset digest drift, unknown references, graph cycles, interface mismatches, duplicate cadence windows, and invalid rollback points. The CLI does not silently repair accepted state.

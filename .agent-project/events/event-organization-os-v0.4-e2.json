@@ -1,0 +1,11 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/activity-event-v1.schema.json",
+  "actor": "agent:codex",
+  "entity": {"id": "organization-os-v0.4-e2", "type": "evidence"},
+  "event_id": "event-organization-os-v0.4-e2",
+  "event_type": "evidence.added",
+  "occurred_at": "2026-08-18T08:10:52Z",
+  "payload": {"grade": "E2", "task_id": "complete-organization-os-v0.4"},
+  "protocol_version": "1.0",
+  "runtime_identity": {"client_version": "desktop", "runtime": "codex"}
+}

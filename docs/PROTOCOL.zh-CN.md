@@ -18,7 +18,23 @@ AGENTS.md
 └── events/
 ```
 
-每条 JSON 记录都声明 `protocol_version`。核心 Schema 标识符使用稳定 URL，随包 Schema 文件可离线使用。Portfolio 根目录增加 `portfolio.json`；项目路径应使用相对路径，保证可移植性。
+每条 JSON 记录都声明 `protocol_version`。核心 Schema 标识符使用稳定 URL，随包 Schema 文件可离线使用。组织根目录增加：
+
+```text
+.agent-project/
+├── organization.json
+├── project-registry.json
+├── assignments/
+├── dispatches/
+├── supervision/
+├── reports/
+├── reviews/
+├── workforce/
+├── cadence/
+└── events/
+```
+
+项目路径使用相对路径以保持可移植性。旧 `portfolio.json` 在 `migrate portfolio-v1` 归档前保持可读；旧文件与新注册表严禁双写。
 
 ## 命令面
 
@@ -34,9 +50,23 @@ agent-project affected
 agent-project adapter render|install|uninstall|doctor
 agent-project index rebuild
 agent-project status
+agent-project org init|status|validate
+agent-project project assign-pm
+agent-project supervision due|dispatch|submit|accept|reject
+agent-project portfolio review
+agent-project role add|assign
+agent-project agent add|list|show|evaluate|propose-upgrade|promote|rollback|pause|retire
+agent-project workforce review
+agent-project cadence due|plan|record|close
+agent-project adapter render-dispatch
+agent-project migrate portfolio-v1
+agent-project dashboard build
+agent-project shadow compare
 ```
 
 全局 `--root` 选择项目/Portfolio，`--json` 输出机器可读结果。所有写命令支持 `--dry-run`。成功返回 `0`；校验完成但记录无效返回 `1`；命令或前置条件错误返回 `2`。
+
+组织命令保留三组权责分离：每个项目只有一个 active accountable PM；项目 PM 与 PMO Reviewer 必须不同；Agent 候选、独立 Reviewer 与晋升批准人必须不同。外部调度器与 Runtime Adapter 不能授予权力。
 
 ## Runtime 身份
 

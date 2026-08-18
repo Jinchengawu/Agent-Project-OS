@@ -1,6 +1,6 @@
 ---
 name: agent-project-os
-description: Manage long-running or cross-project AI engineering work with Agent Project OS. Use when a repository contains .agent-project, when creating or changing tasks, evidence, decisions, handoffs, acceptance receipts, or portfolio dependencies, and when work must remain portable across Codex, Claude Code, and DeepSeek Harness.
+description: Operate a local AI engineering organization with Agent Project OS. Use for project facts, CEO/PMO supervision, Agent HR releases, cadence plans, cross-project impact, or portable dispatch across Codex, Claude Code, and DeepSeek Harness.
 ---
 
 # Agent Project OS
@@ -9,12 +9,22 @@ Use the repository as the portable source of truth. Treat runtime chats, client 
 
 ## Start
 
-1. Find the nearest `.agent-project/manifest.json` or portfolio `portfolio.json`.
+1. Find the nearest project `.agent-project/manifest.json` or organization `.agent-project/organization.json`.
 2. Run `agent-project status --json`, then `agent-project validate --json`.
 3. Read `AGENTS.md`, the project manifest, policy, relevant task, accepted decisions, and latest handoff.
 4. State the task outcome, acceptance criteria, affected projects, and human approval gates before changing files.
 
 Do not silently repair invalid records. Report the validation error and propose the smallest correction.
+
+## Respect The Pyramid
+
+- The Founder retains human authority. The Agent CEO owns portfolio priorities and exception decisions.
+- The PMO issues bounded supervision dispatches and accepts or rejects child-PM reports.
+- Each active project has exactly one accountable PM. Project tasks remain in the project repository.
+- Agent HR owns runtime-neutral role, evaluation, release, promotion, rollback, pause, and retirement records. Concrete Prompt, Skill, and evaluation content remains in its owning capability repository.
+- Do not let an organization report become a copied task ledger or let a dashboard become a second source of truth.
+
+Use `agent-project supervision due`, `agent-project cadence plan`, and `agent-project portfolio review` from the organization root. External schedulers may wake a plan, but cannot bypass its approval gates.
 
 ## Choose The Write Path
 
@@ -23,7 +33,7 @@ Use accepted-state commands only when the human has directly authorized that exa
 ```sh
 agent-project task create --task-id task-123 --title "..." --acceptance "..."
 agent-project task update --task-id task-123 --status ready
-agent-project evidence add --evidence-id evidence-123 --task-id task-123 --grade E2 --kind validation --summary "..." --command "..." --result passed --accepted
+agent-project evidence add --evidence-id evidence-123 --task-id task-123 --grade E2 --kind validation --summary "..." --command "..." --run --accepted
 ```
 
 For an agent-originated change that still needs review, submit to the inbox:
@@ -54,7 +64,7 @@ Never accept or reject your own proposal unless project policy explicitly grants
 
 ## Human Authority
 
-Stop for explicit approval before irreversible actions, production changes, permission changes, spending or fund movement, and public releases. Never weaken these gates because a client offers unattended execution.
+Stop for explicit approval before irreversible actions, production changes, credential or permission changes, spending or fund movement, Agent promotion, destructive migration, and public releases. A candidate Agent, its independent reviewer, and the promotion approver must remain separate. Never weaken these gates because a client offers unattended execution.
 
 ## Finish
 

@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/agent-registry-v1.schema.json",
+  "title": "Agent Project OS agent registry record v1",
+  "type": "object",
+  "required": ["protocol_version", "agent_id", "name", "role_ids", "lifecycle", "active_release_id", "candidate_release_id", "created_at", "updated_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "agent_id": {"type": "string", "minLength": 1},
+    "name": {"type": "string", "minLength": 1},
+    "role_ids": {"type": "array", "items": {"$ref": "common-v1.schema.json#/$defs/id"}, "uniqueItems": true},
+    "lifecycle": {"enum": ["active", "paused", "retired"]},
+    "active_release_id": {"type": ["string", "null"]},
+    "candidate_release_id": {"type": ["string", "null"]},
+    "lifecycle_reason": {"type": "string"},
+    "lifecycle_approved_by": {"type": "string"},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "updated_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

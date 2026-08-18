@@ -4,20 +4,26 @@
 
 ## 系统边界
 
-Agent Project OS 是协议与确定性本地 CLI，不是 Agent runtime，也不是 Web 产品。核心记录描述项目治理，但不绑定模型供应商或客户端；Adapter 把各客户端的生命周期与指令约定翻译为统一协议。
+Agent Project OS 是本地组织协议与确定性 CLI，不是 Agent runtime 或托管项目管理器。Project Kernel 保存工程事实；内置 Governance、Workforce 和 Cadence 模块协调本地 Harness，但不绑定模型供应商或客户端。Adapter 只把客户端惯例转换为统一协议。
 
 ```mermaid
 flowchart TB
-  H["人工权威"] --> P["项目策略"]
-  A["Agent / 模型 / 客户端"] --> D["Runtime Adapter"]
-  D --> I["结构化 inbox 提案"]
-  I --> C["确定性 CLI"]
-  P --> C
-  C --> E["仓库内接纳态实体"]
-  G["Git + 确定性验证"] --> E
-  E --> X["可删除索引与状态投影"]
-  E --> F["联邦 Portfolio 关系"]
-  F --> X
+  F["Founder / 人工权威"] --> CEO["Agent CEO"]
+  CEO --> PMO["PMO"]
+  PMO --> P1["项目 PM A"]
+  PMO --> PN["项目 PM N"]
+  P1 --> K1["Project Kernel A"]
+  PN --> KN["Project Kernel N"]
+  CEO --> HR["Agent HR"]
+  HR --> W["角色 · 评测 · 版本"]
+  C["确定性 CLI"] --> PMO
+  C --> HR
+  C --> K1
+  C --> KN
+  A["Codex / Claude Code / DSH"] --> D["Runtime Adapters"]
+  D --> C
+  PMO --> X["可删除 CEO/PMO 投影"]
+  HR --> X
 ```
 
 ## 分层
@@ -26,15 +32,23 @@ flowchart TB
 
 负责项目 manifest、policy、任务、证据、决策、交接、变更请求、接纳回执、活动事件、runtime adapter 事件、生命周期不变量和校验。
 
-### 2. Federation
+### 2. Governance
 
-`portfolio.json` 只记录项目与依赖/接口边。它计算传递影响范围，并拒绝循环、未知项目、接口版本不兼容和未接纳跨项目回执；它不复制任务或领域状态。
+`organization.json` 与 `project-registry.json` 登记 Founder/CEO/PMO 结构、项目优先级、PM 分派、依赖/接口边和监督策略。dispatch、不可变子 PM 报告、PMO 评审、Portfolio Review 与 CEO 例外构成纵向控制闭环；项目任务仍归各项目仓库。
 
-### 3. Projection
+### 3. Workforce
 
-`.agent-project/index.sqlite3` 是可删除的本地查询缓存。`agent-project index rebuild` 只能从仓库记录重建；任何接纳态写入都不能只存在 SQLite 中。
+Agent HR 拥有中立的 Agent/Role 注册表、能力档案、资产版本、评测、升级提案、晋升、回滚、暂停和退役。具体 Prompt/Skill 内容仍归能力仓库，通过路径、commit 和 SHA-256 引用。
 
-### 4. Runtime Adapters
+### 4. Cadence
+
+Cadence 只计算到期项、幂等运行窗口和有限尝试。外部调度器负责唤醒；核心不运行 daemon，也不控制客户端进程。客户端派工渲染只有输出。
+
+### 5. Projection
+
+`.agent-project/index.sqlite3` 与本地 HTML/JSON 大盘都是可删除查询投影。重建命令只从仓库记录生成它们，不允许任何接纳写只存在于 SQLite 或大盘。
+
+### 6. Runtime Adapters
 
 - Codex：`AGENTS.md` 与项目 Skill。
 - Claude Code：`CLAUDE.md` 导入 `AGENTS.md`；项目 Skill 和生命周期 Hooks 输出归一化事件。
@@ -42,9 +56,9 @@ flowchart TB
 
 Adapter 失败不得改变核心记录语义。用户级写入必须显式使用 `--user`，保留原内容，记录受管状态，并支持卸载恢复。
 
-### 5. 可选治理包
+### 7. 能力包与桥接
 
-AI-PMO 风格的 Portfolio 治理与工作流观测桥通过版本化 Schema/CLI 接口集成。它们保持独立包，不得拥有项目的接纳态任务状态。
+组织治理与 Agent HR 已内置在中立核心包中。AI-PMO 类仓库可以拥有具体角色、Skills、Prompts 与评测集；工作流观测桥可以提出改进。它们通过版本化 Schema/CLI 接口集成，不能拥有项目接纳态任务状态。
 
 ## 写入路径
 
@@ -56,4 +70,4 @@ AI-PMO 风格的 Portfolio 治理与工作流观测桥通过版本化 Schema/CLI
 
 ## 失败策略
 
-遇到不兼容协议版本、非法状态迁移、证据缺失、过期变更请求、未知引用、依赖循环、接口不兼容或受管 Adapter 文件被改动时，校验失败并关闭写入。CLI 不会静默修复接纳态。
+遇到不兼容协议版本、非法状态迁移、证据缺失、重复 PM、过期项目 commit、自审或自我晋升、资产 digest 漂移、未知引用、依赖循环、接口不兼容、重复 Cadence 窗口或失效回滚点时，校验失败关闭。CLI 不会静默修复接纳态。

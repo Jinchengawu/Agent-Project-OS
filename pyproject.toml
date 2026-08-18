@@ -1,18 +1,17 @@
 [build-system]
-requires = ["setuptools>=68"]
+requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "agent-project-os"
-version = "0.1.0a1"
-description = "Local-first, repo-native project governance for AI-assisted engineering."
+version = "0.4.0a1"
+description = "Local-first organization operating system for AI engineering portfolios and Agent workforces."
 readme = "README.md"
 requires-python = ">=3.9"
-license = {text = "Apache-2.0"}
+license = "Apache-2.0"
 authors = [{name = "Agent Project OS contributors"}]
 classifiers = [
   "Development Status :: 3 - Alpha",
-  "License :: OSI Approved :: Apache Software License",
   "Operating System :: MacOS",
   "Operating System :: POSIX :: Linux",
   "Programming Language :: Python :: 3",

@@ -1,0 +1,18 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agent-project-os.org/schemas/portfolio-review-v1.schema.json",
+  "title": "Agent Project OS portfolio review v1",
+  "type": "object",
+  "required": ["protocol_version", "review_id", "organization_id", "as_of", "projects", "ceo_decision_queue", "created_at"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "protocol_version": {"$ref": "common-v1.schema.json#/$defs/protocolVersion"},
+    "review_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "organization_id": {"$ref": "common-v1.schema.json#/$defs/id"},
+    "as_of": {"$ref": "common-v1.schema.json#/$defs/timestamp"},
+    "projects": {"type": "array", "items": {"type": "object"}},
+    "ceo_decision_queue": {"type": "array", "items": {"type": "object"}},
+    "created_at": {"$ref": "common-v1.schema.json#/$defs/timestamp"}
+  },
+  "additionalProperties": false
+}

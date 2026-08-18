@@ -1,14 +1,14 @@
-# Optional Governance Integrations
+# Capability Packs and Governance Integrations
 
 [中文](GOVERNANCE-PACKS.zh-CN.md)
 
-Agent Project OS Core is intentionally sufficient for a single repository. Optional packages may consume its stable interfaces without becoming a second truth source.
+Agent Project OS includes runtime-neutral CEO/PMO and Agent HR governance. External capability repositories may supply concrete roles, Skills, Prompts, and evaluation content without becoming a second truth source.
 
-## AI-PMO Governance Pack
+## AI-PMO Capability Pack
 
-An AI-PMO-style pack may add portfolio reporting, subordinate project reports, E0–E4 gates, blocker reconciliation, and portfolio acceptance. It integrates through released Schema versions, `agent-project --json`, Git identifiers, validation results, and acceptance receipts.
+An AI-PMO-style repository owns concrete PMO/HR role definitions, Skills, Prompts, evaluation sets, and their release history. Agent Project OS owns the neutral organization, report, evaluation, promotion, and cadence contracts. Integration uses released Schema/CLI versions, paths, Git identifiers, SHA-256, validation results, and acceptance receipts.
 
-It must not copy project task ledgers into a separate canonical store, silently accept project work, or convert a report-generation event into E3/E4 evidence.
+Neither side may copy project task ledgers into a separate canonical store, silently accept project work, or convert report generation into E3/E4 evidence.
 
 ## AI-Work-Watcher Bridge
 
@@ -19,8 +19,8 @@ The bridge name and interface are generic; legacy product names and private repo
 ## Integration rule
 
 ```text
-Core Schema/CLI -> versioned evidence interface -> optional pack
-optional pack -> change request / receipt -> Core review path
+Agent Project OS Schema/CLI -> versioned governance interface -> capability pack
+capability pack -> asset release / evaluation evidence -> Agent HR review path
 ```
 
 No source code is copied between packages. Compatibility is declared by protocol/package versions and verified with contract tests.

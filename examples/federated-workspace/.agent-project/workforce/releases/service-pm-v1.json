@@ -1,0 +1,15 @@
+{
+  "$schema": "https://agent-project-os.org/schemas/agent-release-v1.schema.json",
+  "activated_at": "2026-08-01T00:00:00Z",
+  "agent_id": "agent:service-pm",
+  "asset": {
+    "commit": "synthetic-v1",
+    "path": "agent-assets/service-pm-v1.md",
+    "sha256": "e2d62392b850983e91dbef0c8ac335211cdc2c36ad02ad0f8850b7df9d7582d6"
+  },
+  "created_at": "2026-08-01T00:00:00Z",
+  "protocol_version": "1.0",
+  "release_id": "service-pm-v1",
+  "rollback_release_id": null,
+  "status": "superseded"
+}
